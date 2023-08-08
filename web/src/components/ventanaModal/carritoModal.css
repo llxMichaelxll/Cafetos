@@ -1,0 +1,37 @@
+/* Estilos para la ventana emergente (modal) */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(232, 158, 19, 0.7);
+    z-index: 9999;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 400px; /* Ajusta el ancho de la ventana emergente según tus necesidades */
+  }
+  
+  /* Estilos para el botón de cerrar la ventana emergente */
+  .close {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  /* Estilos para el título "Carrito de Compras" */
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  

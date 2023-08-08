@@ -1,0 +1,46 @@
+
+
+.registro-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .registro-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .registro-container input[type="text"],
+  .registro-container input[type="email"],
+  .registro-container input[type="password"],
+  .registro-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .registro-container select {
+    margin-bottom: 20px;
+  }
+  
+  .registro-container button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .registro-container button:hover {
+    background-color: #0056b3;
+  }
+  

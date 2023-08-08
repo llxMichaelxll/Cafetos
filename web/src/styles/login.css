@@ -1,0 +1,43 @@
+/* login.css */
+
+.Login {
+    /* Estilos para el contenedor principal del componente */
+    margin: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .Login h2 {
+    /* Estilos para el título "Iniciar Sesión" */
+    text-align: center;
+  }
+  
+  .Login input {
+    /* Estilos para los campos de entrada */
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .Login button {
+    /* Estilos para los botones "Aceptar" y "Cancelar" */
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .Login button.cancel {
+    /* Estilos específicos para el botón "Cancelar" */
+    background-color: #dc3545;
+  }
+  
