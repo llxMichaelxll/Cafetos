@@ -86,6 +86,29 @@ app.get('/productos', async (req, res) => {
     }
 });
    
+// Ruta para eliminar un producto por su ID
+app.delete('/productos/:idProducto', async (req, res) => {
+  const { idProducto } = req.params;
+
+  try {
+    // Crear conexión a la base de datos utilizando un pool de conexiones
+    const connection = await mysql.createPool(dbConfig).getConnection();
+
+    // Eliminar el producto por su ID
+    await connection.execute('DELETE FROM productos WHERE id_producto = ?', [idProducto]);
+
+    connection.release(); // Liberar la conexión al pool
+
+    res.json({ success: true, message: 'Producto eliminado' });
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    res.status(500).json({ success: false, message: 'Error al eliminar el producto' });
+  }
+});
+
+
+
+
 
 // Ruta para registrar un nuevo usuario
 app.post('/reg', async (req, res) => {

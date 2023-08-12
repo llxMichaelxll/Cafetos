@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Importar el componente Link para manejar la navegación
-import ProductosConImagenes from './ProductosConImagen';
+import ProductosAdmind from './ProductosAdmind';
 import CarouselComponent from './Carousel';
 
 
@@ -31,7 +31,7 @@ const MenuAdmin = () => {
       <button onClick={handleLogoutClick}>Cerrar Sesión</button>
     </div>
     <CarouselComponent/>
-<ProductosConImagenes/>
+<ProductosAdmind/>
 
 </>
   );
