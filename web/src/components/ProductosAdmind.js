@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/productosConImagenes.css'
-const ProductosAdmind = () => {
+import EditarProducto from './EditarProducto'; 
+
+const ProductosAdmin = () => {
   const [productos, setProductos] = useState([]);
+  const [editProduct, setEditProduct] = useState(null);
 
   useEffect(() => {
     // Obtener la lista de productos desde el servidor al cargar el componente
@@ -34,17 +36,17 @@ const ProductosAdmind = () => {
         .catch((error) => console.error('Error al eliminar el producto:', error));
     }
   };
-  
-  
-  
 
+  const handleEditarProducto = (producto) => {
+    setEditProduct(producto);
+  };
 
   return (
-    <div >
+    <div>
       <h2>Productos</h2>
-      <div className='productos-container'>
+      <div className="productos-container">
         {productos.map((producto) => (
-          <div className ="producto-card" key={producto.id_producto}>
+          <div className="producto-card" key={producto.id_producto}>
             <h3>{producto.nombre_producto}</h3>
             <p>Descripción: {producto.descripcion}</p>
             <p>Precio: {producto.precio}</p>
@@ -53,18 +55,26 @@ const ProductosAdmind = () => {
               src={`http://localhost:5000/${producto.url_imagen}`}
               alt={`Imagen de ${producto.nombre_producto}`}
             />
-            <button >
-                Editar
-            </button>
-            <button onClick={() => handleEliminarProducto(producto.id_producto)}>
-                Eliminar
-            </button>
-
+            <button onClick={() => handleEditarProducto(producto)}>Editar</button>
+            <button onClick={() => handleEliminarProducto(producto.id_producto)}>Eliminar</button>
           </div>
         ))}
       </div>
+      {/* Renderizar el componente EditarProducto si editProduct está definido */}
+      {editProduct && (
+        <EditarProducto
+          producto={editProduct}
+          onEdit={(editedProduct) => {
+            // Lógica para enviar los cambios al servidor y actualizar la lista
+            console.log('Producto editado:', editedProduct);
+            // Aquí puedes enviar los cambios al servidor y luego actualizar la lista de productos
+            setEditProduct(null); // Cerrar el formulario de edición
+          }}
+          onCancel={() => setEditProduct(null)}
+        />
+      )}
     </div>
   );
 };
 
-export default ProductosAdmind;
+export default ProductosAdmin;

@@ -107,6 +107,28 @@ app.delete('/productos/:idProducto', async (req, res) => {
 });
 
 
+// Ruta para actualizar un producto existente
+app.put('/productos/:idProducto', async (req, res) => {
+  const idProducto = req.params.idProducto;
+  const { nombre_producto, descripcion, precio, id_categoria, url_imagen, existencias } = req.body;
+
+  try {
+    // Crear conexión a la base de datos utilizando un pool de conexiones
+    const connection = await mysql.createPool(dbConfig).getConnection();
+
+    await connection.execute(
+      'UPDATE productos SET nombre_producto = ?, descripcion = ?, precio = ?, id_categoria = ?, url_imagen = ?, existencias = ? WHERE id_producto = ?',
+      [nombre_producto, descripcion, precio, id_categoria, url_imagen, existencias, idProducto]
+    );
+
+    connection.release(); // Liberar la conexión al pool
+
+    res.json({ success: true, message: 'Producto actualizado' });
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error);
+    res.status(500).json({ success: false, message: 'Error al actualizar el producto' });
+  }
+});
 
 
 
