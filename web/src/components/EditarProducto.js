@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import '../styles/editarProducto.css'
+import React, { useState } from "react";
+import "../styles/editarProducto.css";
 
 const EditarProducto = ({ producto, onEdit, onCancel }) => {
   const [editedProduct, setEditedProduct] = useState(producto);
@@ -14,12 +14,12 @@ const EditarProducto = ({ producto, onEdit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Realizar una solicitud PUT al servidor para actualizar el producto
     fetch(`http://localhost:5000/productos/${editedProduct.id_producto}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(editedProduct),
     })
@@ -27,53 +27,64 @@ const EditarProducto = ({ producto, onEdit, onCancel }) => {
       .then((data) => {
         if (data.success) {
           // Lógica para actualizar la lista de productos
-          console.log('Producto actualizado con éxito');
+          console.log("Producto actualizado con éxito");
           onEdit(editedProduct); // Actualizar el producto en la lista
           onCancel(); // Cerrar el formulario de edición
         } else {
-          console.error('Error al actualizar el producto:', data.message);
+          console.error("Error al actualizar el producto:", data.message);
         }
       })
-      .catch((error) => console.error('Error al actualizar el producto:', error));
+      .catch((error) =>
+        console.error("Error al actualizar el producto:", error)
+      );
   };
 
   return (
     <div className="editar-producto">
       <h2>Editar Producto</h2>
-      <form className='fromProducto' onSubmit={handleSubmit}>
-      <label>
-  Descripción:
-  <input
-    type="text"
-    name="descripcion"
-    value={editedProduct.descripcion}
-    onChange={handleInputChange}
-  />
-</label>
-<label>
-  Precio:
-  <input
-    type="number"
-    name="precio"
-    value={editedProduct.precio}
-    onChange={handleInputChange}
-  />
-</label>
-<label>
-  Existencias:
-  <input
-    type="number"
-    name="existencias"
-    value={editedProduct.existencias}
-    onChange={handleInputChange}
-  />
-</label>
+      <form className="fromProducto" onSubmit={handleSubmit}>
+        <label>
+          Nombre:
+          <input
+            type="text"
+            name="nombre_producto"
+            value={editedProduct.nombre_producto}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Descripción:
+          <input
+            type="text"
+            name="descripcion"
+            value={editedProduct.descripcion}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Precio:
+          <input
+            type="number"
+            name="precio"
+            value={editedProduct.precio}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Existencias:
+          <input
+            type="number"
+            name="existencias"
+            value={editedProduct.existencias}
+            onChange={handleInputChange}
+          />
+        </label>
 
-<img
-              src={`http://localhost:5000/${producto.url_imagen}`}
-              alt={`Imagen de ${producto.nombre_producto}`}
-/>
-{/* Agregar más campos de edición aquí */}
+        <img
+          src={`http://localhost:5000/${producto.url_imagen}`}
+          alt={`Imagen de ${producto.nombre_producto}`}
+        />
+        {/* Agregar más campos de edición aquí */}
 
         {/* Agregar más campos de edición aquí */}
         <button type="submit">Guardar Cambios</button>

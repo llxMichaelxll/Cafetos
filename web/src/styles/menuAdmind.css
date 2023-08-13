@@ -1,0 +1,28 @@
+.contenedor-menu{
+    display: flex;
+    justify-content: space-around;
+}
+
+.Menu{
+    padding-left: 200px;
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+}
+
+.Botones{
+    display: flex;
+    justify-content: end;
+    padding-top: 20px;
+}
+
+.Botones button{
+    width: 100px;
+    height: 34px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

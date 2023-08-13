@@ -4,9 +4,7 @@ import { Link } from 'react-router-dom';
 import CarritoModal from './ventanaModal/ModalCarrito';
 import ProductosConImagenes from './ProductosConImagen';
 import Footer from './Footer';
-import ContactoModal from '../components/ventanaModal/ModalContacto';
 import RegistroModal from './ventanaModal/ModalRegistro';
-import LoginModal from './ventanaModal/ModalLogin';
 
 import CarouselComponent from './Carousel';
 import '../styles/menu.css'
@@ -28,7 +26,6 @@ const Menu = ({ onLoginClick, userRole, onLogoutClick }) => {
         <Link to="/"><li>Inicio</li></Link>
         <li>Categorías</li>
         <Link to="/noticias"><li>Noticias</li></Link>
-        <ContactoModal/>
       </ul>
       </div>
       <div className='botones'>

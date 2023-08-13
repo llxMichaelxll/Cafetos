@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MenuAdmin from './components/MenuAdmin';
@@ -11,6 +11,7 @@ import Carrito from './components/Carrito';
 import SobreNosotros from './components/SobreNosotros';
 import Noticias from './components/Noticias';
 import ContactoModal from '../src/components/ventanaModal/ModalContacto';
+// import jwt from 'jsonwebtoken'; // Importa jsonwebtoken
 
 
 
@@ -18,21 +19,48 @@ const App = () => {
   const [userRole, setUserRole] = useState('guest');
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showNombre, setShownombre] = useState('');
+  const [userToken, setUserToken] = useState(localStorage.getItem('authToken') || null);
+
+ 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken) {
+      console.log('authToken:', storedToken);
+      setUserToken(storedToken);
+      // Realizar cualquier otra acción necesaria con el token, como verificar su validez
+      
+    }
+  }, [userToken]);
+  
+
+  
 
   const handleLoginClick = () => {
-    setShowLoginForm(true); // Mostrar el formulario de inicio de sesión al hacer clic en "Login"
+    setShowLoginForm(true);
   };
 
   const handleLogoutClick = () => {
-    setUserRole('guest'); // Cambiar el rol del usuario a "guest" al hacer clic en "Cerrar Sesión"
+    console.log('Antes de eliminar:', localStorage.getItem('authToken'));
+    setUserRole('guest');
+    setShownombre('');
+    setUserToken(null); // Elimina el token del estado
+    localStorage.removeItem('authToken'); // Elimina el token del almacenamiento local
+    console.log('Después de eliminar:', localStorage.getItem('authToken'));
   };
+  
+  
 
-  const handleLoginSuccess = (role, nombre) => {
-    setUserRole(role); // Actualizar el estado del rol del usuario después de un inicio de sesión exitoso
-    setShowLoginForm(false); // Ocultar el formulario de inicio de sesión después de un inicio de sesión exitoso
+  const handleLoginSuccess = (role, nombre, token) => {
+    setUserRole(role);
     setShownombre(nombre);
+    setUserToken(token);
+    setShowLoginForm(false);
+    localStorage.setItem('authToken', token);
   };
 
+  
+  
+  
   return (
     <Router>
       <div>
@@ -46,7 +74,7 @@ const App = () => {
               path="/"
               element={
                 <>
-                  {showNombre && <h1>{showNombre}</h1>}
+                  {/* {showNombre && <h1>{showNombre}</h1>} */}
 
                   {userRole === 'admin' && (
                     <>
