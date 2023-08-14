@@ -2,8 +2,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CarritoModal from './ventanaModal/ModalCarrito';
+import ContactoModal from './ventanaModal/ModalContacto';
 import CarouselComponent from './Carousel';
 import ProductosConImagenes from './ProductosConImagen';
+import Footer from './Footer';
 import '../styles/menu.css';
 
 const MenuUser = ({ userToken }) => {
@@ -20,7 +22,7 @@ const MenuUser = ({ userToken }) => {
           <li>Categorías</li>
           <Link to="/noticias"><li>Noticias</li></Link>
           <Link to="/sobre_nosotros"><li>Sobre Nosotros</li></Link>
-          <Link to="/contacto"><li>Contacto</li></Link>
+          <ContactoModal/>
         </ul>
         <button>Mi Perfil</button>
         <CarritoModal/>
@@ -28,6 +30,7 @@ const MenuUser = ({ userToken }) => {
       </div>
       <CarouselComponent/>
       <ProductosConImagenes/>
+      <Footer/>
     </>
   );
 };

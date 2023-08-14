@@ -5,10 +5,21 @@ function Contacto() {
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [solicitud, setSolicitud] = useState('');
+  const [asunto, setAsunto] = useState('');
 
   return (
     <div className="contacto-container">
       <h2>Contacto</h2>
+      <label>
+        Asunto:
+        <input
+          type="text"
+          value={asunto}
+          onChange={(e) => {
+            setAsunto(e.target.value);
+          }}
+        />
+      </label>
       <label>
         Nombre:
         <input

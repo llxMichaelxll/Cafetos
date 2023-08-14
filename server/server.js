@@ -1,3 +1,5 @@
+//todo eso es instalado
+
 const express = require("express");
 const cors = require("cors"); //se usa cuando se usan dos puertos distintos
 const mysql = require("mysql2/promise");
@@ -5,6 +7,13 @@ const fileUpload = require("express-fileupload");
 const fs = require("fs");
 const jwt = require("jsonwebtoken"); //para generar tokens
 // const { Connection } = require('mysql2/typings/mysql/lib/Connection');
+const uuid = require('uuid');
+const nodemailer = require('nodemailer');
+
+
+//-----------------------------------------------------------
+
+
 
 const app = express();
 
@@ -33,6 +42,63 @@ app.use(
   })
 );
 
+// Configuración del transporter de nodemailer (debes llenar con tus propios datos)
+const transporter = nodemailer.createTransport({
+  service: 'hotmail',
+  auth: {
+    user: 'cafecafetos@hotmail.com',
+    pass: 'CaFeToSs4menos1'
+  }
+});
+
+// Endpoint para generar y enviar un código de validación
+app.post('/generar-codigo', async (req, res) => {
+  const { correo_electronico } = req.body;
+
+  const codigo = generateRandomCode(); // Función para generar un código aleatorio
+
+  const query = 'INSERT INTO codigos_validacion (codigo, correo_electronico) VALUES (?, ?)';
+  
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    
+    await connection.execute(query, [codigo, correo_electronico]);
+    
+    connection.end();
+
+    // Enviar el código por correo electrónico
+    const mailOptions = {
+      from: 'cafecafetos@hotmail.com',
+      to: correo_electronico,
+      subject: 'Código de Validación',
+      text: `Tu código de validación es: ${codigo}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error al enviar el correo electrónico:', error);
+        res.status(500).json({ success: false, message: 'Error al enviar el código por correo electrónico' });
+        return;
+      }
+
+      console.log('Código de validación enviado:', info.response);
+      res.json({ success: true, message: 'Código de validación enviado por correo electrónico' });
+    });
+  } catch (err) {
+    console.error('Error al insertar el código en la base de datos:', err);
+    res.status(500).json({ success: false, message: 'Error al generar el código de validación' });
+  }
+});
+
+// Función para generar un código aleatorio
+function generateRandomCode() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return code;
+}
 // Ruta para autenticar al usuario
 app.post("/login", async (req, res) => {
   const { correo_electronico, contrasena } = req.body;
@@ -168,7 +234,7 @@ app.put("/productos/:idProducto", async (req, res) => {
 
 // Ruta para registrar un nuevo usuario
 app.post("/reg", async (req, res) => {
-  const { nombre_usuario, correo_electronico, id_ciudad, contrasena, rol } =
+  const { nombre_usuario, correo_electronico, id_ciudad, contrasena, rol, direccion } =
     req.body;
 
   try {
@@ -194,8 +260,8 @@ app.post("/reg", async (req, res) => {
 
     // Insertar el nuevo usuario en la tabla de usuarios
     await connection.execute(
-      "INSERT INTO usuarios (nombre_usuario, correo_electronico, id_ciudad, contrasena,rol) VALUES (?, ?, ?, ?,?)",
-      [nombre_usuario, correo_electronico, id_ciudad, contrasena, rol] // Puedes asignar un rol predeterminado al nuevo usuario
+      "INSERT INTO usuarios (nombre_usuario, correo_electronico, id_ciudad, contrasena,rol,direccion) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre_usuario, correo_electronico, id_ciudad, contrasena, rol,direccion] 
     );
 
     connection.end();
@@ -408,3 +474,4 @@ const PORT = 5000;
 app.listen(PORT, () =>
   console.log(`Servidor Express en ejecución en el puerto ${PORT}`)
 );
+
