@@ -6,6 +6,36 @@ function Contacto() {
   const [correo, setCorreo] = useState('');
   const [solicitud, setSolicitud] = useState('');
   const [asunto, setAsunto] = useState('');
+  const [mensajeRespuesta, setMensajeRespuesta] = useState('');
+
+  const handleEnviarMensaje = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/guardar-mensaje', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre,
+          correo,
+          solicitud,
+          asunto,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMensajeRespuesta('Mensaje enviado exitosamente');
+      } else {
+        setMensajeRespuesta('Error al enviar el mensaje');
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+      setMensajeRespuesta('Error al enviar el mensaje');
+    }
+  };
+
 
   return (
     <div className="contacto-container">
@@ -52,7 +82,8 @@ function Contacto() {
         />
       </label>
 
-      <button>Enviar</button>
+      <button onClick={handleEnviarMensaje}>Enviar</button>
+      {mensajeRespuesta && <p>{mensajeRespuesta}</p>}
     </div>
   );
 }

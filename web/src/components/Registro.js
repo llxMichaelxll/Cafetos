@@ -13,6 +13,7 @@ const Registro = () => {
   const [correoExistente, setCorreoExistente] = useState(false);
   const [codigoValidacion, setCodigoValidacion] = useState("");
   const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [codigoValido, setCodigoValido] = useState(false);
 
   useEffect(() => {
     // Obtener la lista de departamentos desde el servidor al cargar el componente
@@ -36,17 +37,32 @@ const Registro = () => {
     }
   }, [departamento]);
 
+  //Crea carrito de usuario
+  const createCartForUser = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/create-cart/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log('Carrito creado para el usuario:', userId);
+      } else {
+        console.error('Error al crear el carrito:', data.message);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+  };
+
   const handleRegistro = async () => {
     try {
       // Verificar que todos los campos estén completos
-      if (
-        !nombre ||
-        !correo ||
-        !departamento ||
-        !ciudad ||
-        !direccion ||
-        !password
-      ) {
+      if (!nombre || !correo || !departamento || !ciudad || !direccion || !password) {
         alert("Por favor, complete todos los campos");
         return;
       }
@@ -55,60 +71,38 @@ const Registro = () => {
         return;
       }
 
-      // Construir el objeto de datos del nuevo usuario a enviar al backend
-      const nuevoUsuario = {
-        nombre_usuario: nombre,
-        correo_electronico: correo,
-        id_ciudad: ciudad,
-        contrasena: password,
-        rol: "user",
-        direccion: direccion,
-      };
-
-      // Realizar la solicitud POST al backend para registrar el nuevo usuario
-      const response = await fetch("http://localhost:5000/reg", {
+      // Realizar la solicitud POST al backend para verificar si el correo ya existe
+      const verificaCorreoResponse = await fetch("http://localhost:5000/verificar-correo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nuevoUsuario),
+        body: JSON.stringify({ correo_electronico: correo }),
       });
 
-      const data = await response.json();
+      const verificaCorreoData = await verificaCorreoResponse.json();
 
-      // Verificar si el registro fue exitoso
-      if (data.success) {
-        // Generar y enviar el código de validación
-        const codigoResponse = await fetch(
-          "http://localhost:5000/generar-codigo",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ correo_electronico: correo }),
-          }
-        );
+      if (verificaCorreoData.existe) {
+        setCorreoExistente(true);
+        return;
+      }
 
-        const codigoData = await codigoResponse.json();
+      // Si el correo no existe, generar y enviar el código de validación
+      const codigoResponse = await fetch("http://localhost:5000/generar-codigo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ correo_electronico: correo }),
+      });
 
-        if (codigoData.success) {
-          setCodigoEnviado(true); // Habilitar el campo de código y botón de enviar
-          alert(
-            "Registro exitoso. Se ha enviado un código de validación a tu correo electrónico."
-          );
-        } else {
-          console.error(
-            "Error al generar el código de validación:",
-            codigoData.message
-          );
-        }
+      const codigoData = await codigoResponse.json();
+
+      if (codigoData.success) {
+        setCodigoEnviado(true);
+        alert("Se ha enviado un código de validación a tu correo electrónico.");
       } else {
-        if (data.message.includes("correo electrónico")) {
-          setCorreoExistente(true); // Establecer el estado en true si el correo existe
-        } else {
-          console.error("Error al registrar al usuario:", data.message);
-        }
+        console.error("Error al generar el código de validación:", codigoData.message);
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -117,26 +111,55 @@ const Registro = () => {
 
   const handleEnviarCodigo = async () => {
     try {
-      const codigoResponse = await fetch(
-        "http://localhost:5000/generar-codigo", // Cambia esto a la ruta correcta en tu backend
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            correo_electronico: correo,
-            codigo_validacion: codigoValidacion,
-          }),
-        }
-      );
+      const codigoResponse = await fetch("http://localhost:5000/verificar-codigo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          correo_electronico: correo,
+          codigo_validacion: codigoValidacion,
+        }),
+      });
 
       const codigoData = await codigoResponse.json();
 
       if (codigoData.success) {
-        alert("Código de validación enviado. Completa el registro.");
+        alert("registro completo");
+        // Construir el objeto de datos del nuevo usuario a enviar al backend
+      const nuevoUsuario = {
+        nombre_usuario: nombre,
+        correo_electronico: correo,
+        id_ciudad: ciudad,
+        contrasena: password,
+        rol: "user",
+        direccion: direccion,
+      };
+        // Realizar la solicitud POST al backend para insertar al usuario
+        const insertarUsuarioResponse = await fetch("http://localhost:5000/reg", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevoUsuario),
+        });
+
+        const insertarUsuarioData = await insertarUsuarioResponse.json();
+
+        if (insertarUsuarioData.success) {
+          console.log("Usuario insertado exitosamente:", insertarUsuarioData.message);
+
+          // Obtener el ID del usuario recién insertado
+          const userId = insertarUsuarioData.userId;
+
+          // Crear el carrito para el usuario
+          await createCartForUser(userId);
+          window.location.href = '/';
+        } else {
+          console.error("Error al insertar usuario:", insertarUsuarioData.message);
+        }
       } else {
-        console.error("Error al enviar el código de validación:", codigoData.message);
+        console.error("Código de validación incorrecto:", codigoData.message);
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -185,29 +208,36 @@ const Registro = () => {
         value={direccion}
         onChange={(e) => setDireccion(e.target.value)}
       />
-
       <input
         type="password"
         placeholder="Contraseña"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-
       {correoExistente && (
         <div className="alerta-correo">
           El correo electrónico ya está registrado.
         </div>
       )}
-
       {codigoEnviado ? (
-        <>
-          <input
-            type="text"
-            placeholder="Código de Verificación"
-            value={codigoValidacion}
-            onChange={(e) => setCodigoValidacion(e.target.value)}
-          />
-          <button onClick={handleEnviarCodigo}>Enviar Código</button>
+  <>
+    {codigoValido ? (
+      // Si el código es válido, insertar usuario, crear carrito y redirigir al inicio
+      <>
+        {handleRegistro()}
+      </>
+    ) : (
+      // Si el código no es válido, muestra el campo de código y botón de enviar
+      <>
+        <input
+          type="text"
+          placeholder="Código de Verificación"
+          value={codigoValidacion}
+          onChange={(e) => setCodigoValidacion(e.target.value)}
+        />
+        <button onClick={handleEnviarCodigo}>Enviar Código</button>
+      </>
+    )}
         </>
       ) : (
         <button onClick={handleRegistro}>Registrarse</button>

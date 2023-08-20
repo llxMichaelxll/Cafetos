@@ -1,46 +1,47 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
+const Carrito = ({ userId, refreshCarrito }) => {
+  const [productosEnCarrito, setProductosEnCarrito] = useState([]);
 
-const Carrito = () => {
-  const [productos, setProductos] = useState([]);
-
-  // Función para agregar un producto al carrito
-  const agregarAlCarrito = (producto) => {
-    setProductos([...productos, producto]);
-  };
-
-  // Función para eliminar un producto del carrito
-  const eliminarDelCarrito = (indice) => {
-    const nuevosProductos = [...productos];
-    nuevosProductos.splice(indice, 1);
-    setProductos(nuevosProductos);
-  };
-
-  // Función para vaciar el carrito
-  const vaciarCarrito = () => {
-    setProductos([]);
-  };
-
-
+  useEffect(() => {
+    console.log('Realizando solicitud al servidor para obtener productos del carrito...');
+    fetch(`http://localhost:5000/obtener-carrito/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Respuesta del servidor:', data);
+        if (data.success) {
+          console.log('Productos del carrito obtenidos:', data.carrito);
+          setProductosEnCarrito(data.carrito);
+        } else {
+          console.error('Error al obtener productos del carrito:', data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener productos del carrito:', error);
+      });
+  }, [productosEnCarrito]); // Solo se ejecutará cuando cambie "productosEnCarrito"
 
   return (
-    <div className="Carrito">
-      {productos.length === 0 ? (
-        <p>El carrito está vacío</p>
-      ) : (
-        <ul>
-          {productos.map((producto, index) => (
-            <li key={index}>
-              {producto.nombre} - ${producto.precio}
-              <button onClick={() => eliminarDelCarrito(index)}>Eliminar</button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <button onClick={vaciarCarrito}>Vaciar Carrito</button>
+    <div>
+      <h2>Carrito de Compras</h2>
+      <div className="productos-container">
+        {productosEnCarrito.map((producto) => (
+          <div className="producto-card" key={producto.id_producto}>
+            <h3>{producto.nombre_producto}</h3>
+            <p>Descripción: {producto.descripcion}</p>
+            <p>Precio: {producto.precio}</p>
+            <p>Cantidad: {producto.cantidad}</p>
+            <img
+              src={`http://localhost:5000/${producto.url_imagen}`}
+              alt={`Imagen de ${producto.nombre_producto}`}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default Carrito;
+
+ 

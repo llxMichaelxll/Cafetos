@@ -1,5 +1,5 @@
-import React, { useEffect,useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 
 const Login = ({ setRol }) => {
@@ -23,8 +23,8 @@ const Login = ({ setRol }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          console.log('Inicio de sesión exitoso. Rol del usuario:', data.rol, data.nombre);
-          setRol(data.rol, data.nombre, data.token); // Passing the token to the setRol function
+          console.log('Inicio de sesión exitoso. Rol del usuario:', data.rol, data.nombre,data.id_usuario);
+          setRol(data.rol, data.nombre, data.token, data.id_usuario); // Passing the token to the setRol function
           history('/'); // Navigating back to the main page
 
         } else {

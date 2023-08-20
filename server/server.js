@@ -7,13 +7,10 @@ const fileUpload = require("express-fileupload");
 const fs = require("fs");
 const jwt = require("jsonwebtoken"); //para generar tokens
 // const { Connection } = require('mysql2/typings/mysql/lib/Connection');
-const uuid = require('uuid');
-const nodemailer = require('nodemailer');
-
+const uuid = require("uuid");
+const nodemailer = require("nodemailer");
 
 //-----------------------------------------------------------
-
-
 
 const app = express();
 
@@ -42,58 +39,137 @@ app.use(
   })
 );
 
-// Configuración del transporter de nodemailer (debes llenar con tus propios datos)
-const transporter = nodemailer.createTransport({
-  service: 'hotmail',
-  auth: {
-    user: 'cafecafetos@hotmail.com',
-    pass: 'CaFeToSs4menos1'
+app.post("/verificar-codigo", async (req, res) => {
+  const { correo_electronico, codigo_validacion } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consulta para verificar si el código de validación es correcto para el correo electrónico dado
+    const [rows] = await connection.execute(
+      "SELECT * FROM codigos_validacion WHERE  codigo = ? AND correo_electronico = ?",
+      [codigo_validacion, correo_electronico]
+    );
+
+    connection.end();
+
+    // Si hay un resultado en las filas, el código es válido; de lo contrario, no es válido
+    const codigoValido = rows.length > 0;
+
+    res.json({
+      success: codigoValido,
+      message: codigoValido
+        ? "Código de validación correcto"
+        : "Código de validación incorrecto",
+    });
+  } catch (err) {
+    console.error("Error al verificar el código de validación:", err);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error al verificar el código de validación",
+      });
   }
 });
 
+//mensajes enviar nodemiler
+app.post("/enviar-respuesta", async (req, res) => {
+  try {
+    const { correo, mensaje } = req.body;
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: {
+        user: "cafecafetos@hotmail.com",
+        pass: "CaFeToSs4menos1",
+      },
+    });
+
+    const mailOptions = {
+      from: "cafecafetos@hotmail.com",
+      to: correo,
+      subject: "Respuesta a tu mensaje",
+      text: mensaje,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ success: true, message: "Correo enviado con éxito" });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al enviar el correo" });
+  }
+});
+// Configuración del transporter de nodemailer (debes llenar con tus propios datos)
+const transporter = nodemailer.createTransport({
+  service: "hotmail",
+  auth: {
+    user: "cafecafetos@hotmail.com",
+    pass: "CaFeToSs4menos1",
+  },
+});
+
 // Endpoint para generar y enviar un código de validación
-app.post('/generar-codigo', async (req, res) => {
+app.post("/generar-codigo", async (req, res) => {
   const { correo_electronico } = req.body;
 
   const codigo = generateRandomCode(); // Función para generar un código aleatorio
 
-  const query = 'INSERT INTO codigos_validacion (codigo, correo_electronico) VALUES (?, ?)';
-  
+  const query =
+    "INSERT INTO codigos_validacion (codigo, correo_electronico) VALUES (?, ?)";
+
   try {
     const connection = await mysql.createConnection(dbConfig);
-    
+
     await connection.execute(query, [codigo, correo_electronico]);
-    
+
     connection.end();
 
     // Enviar el código por correo electrónico
     const mailOptions = {
-      from: 'cafecafetos@hotmail.com',
+      from: "cafecafetos@hotmail.com",
       to: correo_electronico,
-      subject: 'Código de Validación',
-      text: `Tu código de validación es: ${codigo}`
+      subject: "Código de Validación",
+      text: `Tu código de validación es: ${codigo}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error('Error al enviar el correo electrónico:', error);
-        res.status(500).json({ success: false, message: 'Error al enviar el código por correo electrónico' });
+        console.error("Error al enviar el correo electrónico:", error);
+        res
+          .status(500)
+          .json({
+            success: false,
+            message: "Error al enviar el código por correo electrónico",
+          });
         return;
       }
 
-      console.log('Código de validación enviado:', info.response);
-      res.json({ success: true, message: 'Código de validación enviado por correo electrónico' });
+      console.log("Código de validación enviado:", info.response);
+      res.json({
+        success: true,
+        message: "Código de validación enviado por correo electrónico",
+      });
     });
   } catch (err) {
-    console.error('Error al insertar el código en la base de datos:', err);
-    res.status(500).json({ success: false, message: 'Error al generar el código de validación' });
+    console.error("Error al insertar el código en la base de datos:", err);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error al generar el código de validación",
+      });
   }
 });
 
 // Función para generar un código aleatorio
 function generateRandomCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let code = '';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
   for (let i = 0; i < 6; i++) {
     code += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -109,7 +185,7 @@ app.post("/login", async (req, res) => {
 
     // Consultar el usuario por correo y contraseña
     const [rows] = await connection.execute(
-      "SELECT nombre_usuario, correo_electronico, id_ciudad, rol FROM usuarios WHERE correo_electronico = ? AND contrasena = ?",
+      "SELECT nombre_usuario, correo_electronico, id_usuario, rol FROM usuarios WHERE correo_electronico = ? AND contrasena = ?",
       [correo_electronico, contrasena]
     );
 
@@ -129,7 +205,8 @@ app.post("/login", async (req, res) => {
         success: true,
         nombre: rows[0].nombre_usuario,
         rol: rows[0].rol,
-        token: token, // Enviar el token al cliente
+        token: token, // Enviar el token al cliente,
+        id_usuario: rows[0].id_usuario,
       });
     } else {
       // Credenciales inválidas
@@ -140,6 +217,67 @@ app.post("/login", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Error al autenticar al usuario" });
+  }
+});
+
+// Ruta guardar mensajes
+app.post("/guardar-mensaje", async (req, res) => {
+  try {
+    const { nombre, correo, solicitud, asunto } = req.body;
+
+    const connection = await mysql.createConnection(dbConfig);
+
+    await connection.execute(
+      "INSERT INTO mensajes (nombre, correo, asunto, solicitud) VALUES (?, ?, ?, ?)",
+      [nombre, correo, asunto, solicitud]
+    );
+
+    connection.end();
+
+    res.json({ success: true, message: "Mensaje guardado exitosamente" });
+  } catch (error) {
+    console.error("Error al guardar el mensaje:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al guardar el mensaje" });
+  }
+});
+
+// traer mensajes
+app.get("/obtener-mensajes", async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [rows] = await connection.execute("SELECT * FROM mensajes");
+
+    connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al obtener mensajes:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al obtener mensajes" });
+  }
+});
+
+//Ruta para eliminar mensajes
+app.delete("/eliminar-mensaje/:id", async (req, res) => {
+  try {
+    const messageId = req.params.id;
+
+    const connection = await mysql.createConnection(dbConfig);
+
+    await connection.execute("DELETE FROM mensajes WHERE id = ?", [messageId]);
+
+    connection.end();
+
+    res.json({ success: true, message: "Mensaje eliminado exitosamente" });
+  } catch (error) {
+    console.error("Error al eliminar el mensaje:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al eliminar el mensaje" });
   }
 });
 
@@ -159,12 +297,10 @@ app.get("/productos", async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener la lista de productos:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error al obtener la lista de productos",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de productos",
+    });
   }
 });
 
@@ -232,47 +368,114 @@ app.put("/productos/:idProducto", async (req, res) => {
   }
 });
 
+app.post("/verificar-correo", async (req, res) => {
+  const { correo_electronico } = req.body;
+
+  try {
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consultar si el correo electrónico ya está registrado
+    const [rows] = await connection.execute(
+      "SELECT COUNT(*) as count FROM usuarios WHERE correo_electronico = ?",
+      [correo_electronico]
+    );
+
+    // Cerrar la conexión a la base de datos
+    connection.close();
+
+    const count = rows[0].count;
+
+    if (count > 0) {
+      // El correo electrónico ya está registrado
+      res.json({
+        success: false,
+        message: "El correo electrónico ya está registrado",
+      });
+    } else {
+      // El correo electrónico no está registrado
+      res.json({
+        success: true,
+        message: "El correo electrónico está disponible",
+      });
+    }
+  } catch (error) {
+    console.error("Error al verificar el correo electrónico:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error al verificar el correo electrónico",
+      });
+  }
+});
 // Ruta para registrar un nuevo usuario
 app.post("/reg", async (req, res) => {
-  const { nombre_usuario, correo_electronico, id_ciudad, contrasena, rol, direccion } =
-    req.body;
+  const {
+    nombre_usuario,
+    correo_electronico,
+    id_ciudad,
+    contrasena,
+    rol,
+    direccion,
+    codigo_validacion, // Agregar este campo
+  } = req.body;
 
   try {
     // Crear conexión a la base de datos
     const connection = await mysql.createConnection(dbConfig);
 
-    // Verificar si el correo electrónico ya existe en la tabla de usuarios
-    const [rows] = await connection.execute(
-      "SELECT correo_electronico FROM usuarios WHERE correo_electronico = ?",
-      [correo_electronico]
-    );
-
-    if (rows.length > 0) {
-      // El correo electrónico ya existe, enviar una respuesta de error
-      connection.end();
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "El correo electrónico ya está registrado",
-        });
-    }
-
     // Insertar el nuevo usuario en la tabla de usuarios
-    await connection.execute(
-      "INSERT INTO usuarios (nombre_usuario, correo_electronico, id_ciudad, contrasena,rol,direccion) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre_usuario, correo_electronico, id_ciudad, contrasena, rol,direccion] 
+    const [result] = await connection.execute(
+      "INSERT INTO usuarios (nombre_usuario, correo_electronico, id_ciudad, contrasena, rol, direccion) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        nombre_usuario,
+        correo_electronico,
+        id_ciudad,
+        contrasena,
+        rol,
+        direccion,
+      ]
     );
 
     connection.end();
 
-    // Registro exitoso, enviar una respuesta de éxito
-    res.json({ success: true, message: "Registro exitoso" });
+    // Obtén el ID del usuario recién registrado
+    const userId = result.insertId;
+
+    // Registro exitoso, enviar una respuesta de éxito con el ID del usuario
+    res.json({ success: true, message: "Registro exitoso", userId });
   } catch (err) {
     console.error("Error al registrar al usuario:", err);
     res
       .status(500)
       .json({ success: false, message: "Error al registrar al usuario" });
+  }
+});
+
+app.post("/create-cart/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Insertar un nuevo carrito para el usuario en la tabla 'carritos'
+    const [result] = await connection.execute(
+      "INSERT INTO carrito_compras (id_usuario) VALUES (?)",
+      [userId]
+    );
+
+    connection.end();
+
+    res.json({
+      success: true,
+      message: "Carrito creado y asignado al usuario",
+    });
+  } catch (err) {
+    console.error("Error al crear el carrito:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al crear el carrito" });
   }
 });
 // Ruta para obtener la lista de categorías
@@ -292,12 +495,10 @@ app.get("/categorias", async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener la lista de categorías:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error al obtener la lista de categorías",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de categorías",
+    });
   }
 });
 
@@ -318,12 +519,10 @@ app.get("/departamentos", async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener la lista de departamentos:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error al obtener la lista de departamentos",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de departamentos",
+    });
   }
 });
 
@@ -415,12 +614,10 @@ app.get("/obtenerImagenes", (req, res) => {
     fs.readdir(uploadsDir, (err, files) => {
       if (err) {
         console.error("Error al leer el directorio de imágenes:", err);
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Error al obtener la lista de imágenes",
-          });
+        res.status(500).json({
+          success: false,
+          message: "Error al obtener la lista de imágenes",
+        });
       } else {
         // Crear un array con las rutas completas de las imágenes
         const imagenes = files.map(
@@ -433,12 +630,10 @@ app.get("/obtenerImagenes", (req, res) => {
     });
   } catch (err) {
     console.error("Error al obtener la lista de imágenes:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error al obtener la lista de imágenes",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de imágenes",
+    });
   }
 });
 
@@ -461,17 +656,71 @@ app.get("/ciudades/:idDepartamento", async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener la lista de ciudades:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error al obtener la lista de ciudades",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de ciudades",
+    });
   }
 });
+
+app.post('/agregar-al-carrito', async (req, res) => {
+  const { idUsuario, idProducto, cantidad } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig)
+    await connection.execute(
+      'INSERT INTO carrito_compras (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)',
+      [idUsuario, idProducto, cantidad]
+    );
+      connection.end();
+    res.json({ success: true, message: 'Producto agregado al carrito correctamente' });
+  } catch (error) {
+    console.error('Error al agregar producto al carrito:', error);
+    res.status(500).json({ success: false, message: 'Hubo un error al agregar producto al carrito' });
+  }
+});
+
+app.delete('/eliminar-del-carrito', async (req, res) => {
+  const { idUsuario, idProducto } = req.body;
+
+  try {
+
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.execute(
+      'DELETE FROM carrito_compras WHERE id_usuario = ? AND id_producto = ?',
+      [idUsuario, idProducto]
+    );
+      connection.end();
+    res.json({ success: true, message: 'Producto eliminado del carrito correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar producto del carrito:', error);
+    res.status(500).json({ success: false, message: 'Hubo un error al eliminar producto del carrito' });
+  }
+});
+
+app.get('/obtener-carrito/:idUsuario', async (req, res) => {
+  const { idUsuario } = req.params;
+
+  try {
+
+    const connection = await mysql.createConnection(dbConfig)
+    const [carrito] = await connection.execute(
+      'SELECT p.id_producto, p.nombre_producto, p.precio, c.cantidad, p.url_imagen ' +
+      'FROM productos p ' +
+      'INNER JOIN carrito_compras c ON p.id_producto = c.id_producto ' +
+      'WHERE c.id_usuario = ?',
+      [idUsuario]
+    );
+      connection.end();
+    res.json({ success: true, carrito });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ success: false, message: 'Hubo un error al obtener el carrito del usuario' });
+  }
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () =>
   console.log(`Servidor Express en ejecución en el puerto ${PORT}`)
 );
-

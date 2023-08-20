@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import ProductosAdmind from './ProductosAdmind';
 import CarouselComponent from './Carousel';
+import Mensajes from './Mensajes';
 import '../styles/menuAdmind.css';
 
 const MenuAdmin = ({ userToken }) => {
@@ -17,7 +18,7 @@ const MenuAdmin = ({ userToken }) => {
         <div className="Menu">
           <ul>
             <li>Pedidos</li>
-            <li>Mensajes</li>
+            <li><Link to ="/mensajes" >Mensajes</Link></li>
             <li>
               <Link to="/nuevo-producto">Agregar producto</Link>
             </li>

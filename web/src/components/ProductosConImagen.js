@@ -1,44 +1,107 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/productosConImagenes.css'
-const ProductosConImagenes = () => {
+import { Link } from 'react-router-dom'; // Importar Link desde React Router
+import '../styles/productosConImagenes.css';
+
+const ProductosConImagenes = ({ userId }) => {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
 
   useEffect(() => {
-    // Obtener la lista de productos desde el servidor al cargar el componente
     fetch('http://localhost:5000/productos')
       .then((response) => response.json())
       .then((data) => {
-        setProductos(data); // Guardar los productos en el estado
+        setProductos(data);
       })
       .catch((error) => console.error('Error al obtener la lista de productos:', error));
   }, []);
 
-  // Función para agregar un producto al carrito
-  const agregarAlCarrito = (producto) => {
-    // Comprobar si el producto ya está en el carrito
-    const productoEnCarrito = carrito.find((item) => item.id_producto === producto.id_producto);
+  useEffect(() => {
+    fetch(`http://localhost:5000/obtener-carrito/${userId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setCarrito(data.carrito);
+        } else {
+          console.error('Error al obtener el carrito:', data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener el carrito:', error);
+      });
+  }, [userId]);
 
-    if (productoEnCarrito) {
-      // Si el producto ya está en el carrito, quitarlo del carrito
-      setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id_producto !== producto.id_producto));
-    } else {
-      // Si el producto no está en el carrito, agregarlo al carrito
-      setCarrito((prevCarrito) => [...prevCarrito, producto]);
+  const agregarProductoAlCarrito = async (productoId) => {
+    if (!userId) {
+      console.log('No se puede agregar al carrito: usuario no ha iniciado sesión');
+      return;
+    }
+
+    console.log('Agregando producto al carrito. ID del producto:', productoId);
+
+    try {
+      const response = await fetch('http://localhost:5000/agregar-al-carrito', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idUsuario: userId,
+          idProducto: productoId,
+          cantidad: 1,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log('Producto agregado al carrito');
+        setCarrito([...carrito, productoId]);
+
+      } else {
+        console.error('Error al agregar producto al carrito:', data.message);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
     }
   };
 
-  // Función para comprobar si un producto está en el carrito
-  const estaEnCarrito = (producto) => {
-    return carrito.some((item) => item.id_producto === producto.id_producto);
+  const eliminarProductoDelCarrito = async (productoId) => {
+    if (!userId) {
+      console.log('No se puede eliminar del carrito: usuario no ha iniciado sesión');
+      return;
+    }
+
+    console.log('Eliminando producto del carrito. ID del producto:', productoId);
+
+    try {
+      const response = await fetch('http://localhost:5000/eliminar-del-carrito', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idUsuario: userId,
+          idProducto: productoId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log('Producto eliminado del carrito');
+        setCarrito(carrito.filter((item) => item !== productoId));
+      } else {
+        console.error('Error al eliminar producto del carrito:', data.message);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
   };
 
   return (
-    <div >
+    <div>
       <h2>Productos</h2>
-      <div className='productos-container'>
+      <div className="productos-container">
         {productos.map((producto) => (
-          <div className ="producto-card" key={producto.id_producto}>
+          <div className="producto-card" key={producto.id_producto}>
             <h3>{producto.nombre_producto}</h3>
             <p>Descripción: {producto.descripcion}</p>
             <p>Precio: {producto.precio}</p>
@@ -47,14 +110,28 @@ const ProductosConImagenes = () => {
               src={`http://localhost:5000/${producto.url_imagen}`}
               alt={`Imagen de ${producto.nombre_producto}`}
             />
-            <button onClick={() => agregarAlCarrito(producto)}>
-              {estaEnCarrito(producto) ? 'Quitar del carrito' : 'Agregar al carrito'}
-            </button>
+            {userId ? (
+              carrito.includes(producto.id_producto) ? (
+                <div>
+                  <button onClick={() => eliminarProductoDelCarrito(producto.id_producto)}>
+                    Eliminar del carrito
+                  </button>
+                  <p>Producto en el carrito</p>
+                </div>
+              ) : (
+                <button onClick={() => agregarProductoAlCarrito(producto.id_producto)}>
+                  Agregar al carrito
+                </button>
+              )
+            ) : (
+              <Link to="/login"><button>Agregar al carrito</button></Link>
+            )}
           </div>
         ))}
       </div>
     </div>
   );
 };
+
 
 export default ProductosConImagenes;

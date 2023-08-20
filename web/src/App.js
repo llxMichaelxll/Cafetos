@@ -2,6 +2,7 @@ import React, { useEffect,useState } from 'react';
 import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MenuAdmin from './components/MenuAdmin';
+import Mensajes from './components/Mensajes';
 import MenuUser from './components/MenuUser';
 import Menu from './components/Menu';
 import Login from './components/Login';
@@ -20,6 +21,7 @@ const App = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showNombre, setShownombre] = useState('');
   const [userToken, setUserToken] = useState(localStorage.getItem('authToken') || null);
+  const [userId, setUserId] = useState('')
 
  
   useEffect(() => {
@@ -50,8 +52,9 @@ const App = () => {
   
   
 
-  const handleLoginSuccess = (role, nombre, token) => {
+  const handleLoginSuccess = (role, nombre, token, userId) => {
     setUserRole(role);
+    setUserId(userId);
     setShownombre(nombre);
     setUserToken(token);
     setShowLoginForm(false);
@@ -81,7 +84,7 @@ const App = () => {
                       <MenuAdmin />
                     </>
                   )}
-                  {userRole === 'user' && <MenuUser />}
+                  {userRole === 'user' && <MenuUser userId ={userId}/>}
                   {userRole === 'guest' && (
                     <Menu
                       onLoginClick={handleLoginClick}
@@ -95,10 +98,12 @@ const App = () => {
             <Route path="/registro" element={<Registro />} /> {/* Agregamos esta línea para la ruta de registro */}
             <Route path="/nuevo-producto" element={<NuevoProducto />} />
             <Route path="/menu-admin" element={<MenuAdmin />} />
-            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/carrito" element={<Carrito/>} />
+            <Route path="/mensajes" element={<Mensajes />} />
             <Route path="/contacto-modal" element={<ContactoModal />} />
             <Route path="/sobre_nosotros" element={<SobreNosotros />} />
             <Route path="/noticias" element={<Noticias/>} />
+            <Route path="/login" element={<Login/>} />
             <Route path="/" element={<Menu onLoginClick={handleLoginClick} userRole={userRole} onLogoutClick={handleLogoutClick} />} />
 
 

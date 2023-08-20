@@ -1,5 +1,6 @@
 // MenuUser.js
 import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CarritoModal from './ventanaModal/ModalCarrito';
 import ContactoModal from './ventanaModal/ModalContacto';
@@ -8,7 +9,8 @@ import ProductosConImagenes from './ProductosConImagen';
 import Footer from './Footer';
 import '../styles/menu.css';
 
-const MenuUser = ({ userToken }) => {
+const MenuUser = ({ userToken, userId }) => {
+  
   const handleLogoutClick = () => {
     localStorage.removeItem('authToken');
     window.location.href = '/';
@@ -25,14 +27,18 @@ const MenuUser = ({ userToken }) => {
           <ContactoModal/>
         </ul>
         <button>Mi Perfil</button>
-        <CarritoModal/>
+        <CarritoModal  userId={userId} />
+             {/* <Link to={{ pathname: '/carrito', state: { userId: userId } }}>
+  <button>Carrito</button>
+</Link> */}
         <button onClick={handleLogoutClick}>Cerrar Sesión</button>
       </div>
       <CarouselComponent/>
-      <ProductosConImagenes/>
+      <ProductosConImagenes userId={userId}/> 
       <Footer/>
     </>
   );
 };
 
 export default MenuUser;
+
