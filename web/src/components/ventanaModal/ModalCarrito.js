@@ -1,4 +1,4 @@
-import React, { useState,refreshCarrito } from 'react';
+import React, { useState} from 'react';
 import Carrito from '../Carrito'; // Importar el componente Carrito
 import '../ventanaModal/carritoModal.css'
 
@@ -25,7 +25,7 @@ const CarritoModal = ({userId}) => {
           <div className="modal-content">
             <span className="close" onClick={closeModal}>&times;</span> {/* Botón para cerrar la ventana emergente */}
             <h2>Carrito de Compras</h2>
-            <Carrito userId={userId}/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
+            <Carrito/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
           </div>
         </div>
       )}

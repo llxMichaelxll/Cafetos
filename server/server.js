@@ -663,61 +663,6 @@ app.get("/ciudades/:idDepartamento", async (req, res) => {
   }
 });
 
-app.post('/agregar-al-carrito', async (req, res) => {
-  const { idUsuario, idProducto, cantidad } = req.body;
-
-  try {
-    const connection = await mysql.createConnection(dbConfig)
-    await connection.execute(
-      'INSERT INTO carrito_compras (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)',
-      [idUsuario, idProducto, cantidad]
-    );
-      connection.end();
-    res.json({ success: true, message: 'Producto agregado al carrito correctamente' });
-  } catch (error) {
-    console.error('Error al agregar producto al carrito:', error);
-    res.status(500).json({ success: false, message: 'Hubo un error al agregar producto al carrito' });
-  }
-});
-
-app.delete('/eliminar-del-carrito', async (req, res) => {
-  const { idUsuario, idProducto } = req.body;
-
-  try {
-
-    const connection = await mysql.createConnection(dbConfig);
-    await connection.execute(
-      'DELETE FROM carrito_compras WHERE id_usuario = ? AND id_producto = ?',
-      [idUsuario, idProducto]
-    );
-      connection.end();
-    res.json({ success: true, message: 'Producto eliminado del carrito correctamente' });
-  } catch (error) {
-    console.error('Error al eliminar producto del carrito:', error);
-    res.status(500).json({ success: false, message: 'Hubo un error al eliminar producto del carrito' });
-  }
-});
-
-app.get('/obtener-carrito/:idUsuario', async (req, res) => {
-  const { idUsuario } = req.params;
-
-  try {
-
-    const connection = await mysql.createConnection(dbConfig)
-    const [carrito] = await connection.execute(
-      'SELECT p.id_producto, p.nombre_producto, p.precio, c.cantidad, p.url_imagen ' +
-      'FROM productos p ' +
-      'INNER JOIN carrito_compras c ON p.id_producto = c.id_producto ' +
-      'WHERE c.id_usuario = ?',
-      [idUsuario]
-    );
-      connection.end();
-    res.json({ success: true, carrito });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ success: false, message: 'Hubo un error al obtener el carrito del usuario' });
-  }
-});
 
 
 const PORT = 5000;
