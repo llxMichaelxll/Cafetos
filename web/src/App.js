@@ -2,6 +2,7 @@ import React, { useEffect,useState } from 'react';
 import './styles/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MenuAdmin from './components/MenuAdmin';
+import NuevaNoticia from './components/Admin/NuevaNoticia';
 import Mensajes from './components/Mensajes';
 import MenuUser from './components/MenuUser';
 import Menu from './components/Menu';
@@ -12,6 +13,8 @@ import Carrito from './components/Carrito';
 import SobreNosotros from './components/SobreNosotros';
 import Noticias from './components/Noticias';
 import ContactoModal from '../src/components/ventanaModal/ModalContacto';
+import PedidosUsuario from './components/PedidosUsuario';
+import PedidosAdmin from './components/PedidosAdmin';
 // import jwt from 'jsonwebtoken'; // Importa jsonwebtoken
 
 
@@ -27,7 +30,6 @@ const App = () => {
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken');
     if (storedToken) {
-      console.log('authToken:', storedToken);
       setUserToken(storedToken);
       // Realizar cualquier otra acción necesaria con el token, como verificar su validez
       
@@ -47,7 +49,6 @@ const App = () => {
     setShownombre('');
     setUserToken(null); // Elimina el token del estado
     localStorage.removeItem('authToken'); // Elimina el token del almacenamiento local
-    console.log('Después de eliminar:', localStorage.getItem('authToken'));
   };
   
   
@@ -104,6 +105,9 @@ const App = () => {
             <Route path="/sobre_nosotros" element={<SobreNosotros />} />
             <Route path="/noticias" element={<Noticias/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path="/Nnoticia" element={<NuevaNoticia/>}/>
+            <Route path="/admin-pedidos" element={<PedidosAdmin/>} />
+            <Route path="/pedidos-usuario" element={<PedidosUsuario/>} />
             <Route path="/" element={<Menu onLoginClick={handleLoginClick} userRole={userRole} onLogoutClick={handleLogoutClick} />} />
 
 

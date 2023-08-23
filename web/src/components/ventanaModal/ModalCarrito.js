@@ -25,7 +25,7 @@ const CarritoModal = ({userId}) => {
           <div className="modal-content">
             <span className="close" onClick={closeModal}>&times;</span> {/* Botón para cerrar la ventana emergente */}
             <h2>Carrito de Compras</h2>
-            <Carrito/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
+            <Carrito userId = {userId}/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
           </div>
         </div>
       )}

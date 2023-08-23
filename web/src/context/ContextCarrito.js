@@ -8,7 +8,14 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [idUsuario, setIdUsuario] = useState(null)
+  const [rol,setUserRol]= useState(null)
 
+  const admind = (rol === 'admin'? true: false);
+
+  const vaciarCarrito = () => {
+    setCartItems([])
+  }
   const addToCart = (productId, productDetails) => {
     console.log('Agregando al carrito:', productId, productDetails); // Agrega este console.log
     setCartItems((prevItems) => [...prevItems, { id: productId, ...productDetails }]);
@@ -19,7 +26,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ idUsuario,admind,setUserRol,setIdUsuario,vaciarCarrito, cartItems, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

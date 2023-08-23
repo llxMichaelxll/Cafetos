@@ -17,8 +17,9 @@ const MenuAdmin = ({ userToken }) => {
       <div className='contenedor-menu'>
         <div className="Menu">
           <ul>
-            <li>Pedidos</li>
+            <li><Link to="/admin-pedidos">Pedidos</Link></li>
             <li><Link to ="/mensajes" >Mensajes</Link></li>
+            <Link to="/noticias"><li>Noticias</li></Link>
             <li>
               <Link to="/nuevo-producto">Agregar producto</Link>
             </li>

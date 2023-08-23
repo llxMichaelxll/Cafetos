@@ -23,7 +23,7 @@ const MenuUser = ({ userToken, userId }) => {
           <Link to="/"><li>Inicio</li></Link>
           <li>Categorías</li>
           <Link to="/noticias"><li>Noticias</li></Link>
-          <Link to="/sobre_nosotros"><li>Sobre Nosotros</li></Link>
+          <Link to="/pedidos-usuario"><li>Pedidos</li></Link>
           <ContactoModal/>
         </ul>
         <button>Mi Perfil</button>

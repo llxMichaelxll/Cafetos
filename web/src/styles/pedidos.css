@@ -1,0 +1,12 @@
+.targeta-pedidos{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.targeta-pedidos p{
+    margin-bottom: 10px;
+}
+
+.targeta-productos{
+    display: block;
+}

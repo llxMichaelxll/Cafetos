@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken"); //para generar tokens
 // const { Connection } = require('mysql2/typings/mysql/lib/Connection');
 const uuid = require("uuid");
 const nodemailer = require("nodemailer");
+const { connect } = require("http2");
 
 //-----------------------------------------------------------
 
@@ -453,31 +454,7 @@ app.post("/reg", async (req, res) => {
   }
 });
 
-app.post("/create-cart/:userId", async (req, res) => {
-  const userId = req.params.userId;
 
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-
-    // Insertar un nuevo carrito para el usuario en la tabla 'carritos'
-    const [result] = await connection.execute(
-      "INSERT INTO carrito_compras (id_usuario) VALUES (?)",
-      [userId]
-    );
-
-    connection.end();
-
-    res.json({
-      success: true,
-      message: "Carrito creado y asignado al usuario",
-    });
-  } catch (err) {
-    console.error("Error al crear el carrito:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Error al crear el carrito" });
-  }
-});
 // Ruta para obtener la lista de categorías
 app.get("/categorias", async (req, res) => {
   try {
@@ -663,6 +640,154 @@ app.get("/ciudades/:idDepartamento", async (req, res) => {
   }
 });
 
+app.post('/nuevo-pedido', async (req, res) => {
+  const { id_usuario, monto_total, productos, estado } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute('INSERT INTO pedidos (id_usuario, monto_total, productos, estado) VALUES (?, ?, ?, ?)', [id_usuario, monto_total, productos, estado]);
+
+    const id_pedido = result.insertId; // Obtén la ID del pedido recién insertado
+
+    // Insertar en la tabla intermedia pedidos_usuario
+    await connection.execute('INSERT INTO pedidos_usuario (id_usuario, id_pedido) VALUES (?, ?)', [id_usuario, id_pedido]);
+
+    connection.end();
+    res.json({ success: true, message: "pedido completo" });
+  } catch (error) {
+    console.error("Error al guardar el pedido:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al guardar el pedido" });
+  }
+});
+
+
+app.get('/traer-pedidos-usuario/:idUsuario', async (req, res) => {
+  const { idUsuario } = req.params; // Aquí obtén el valor del parámetro idUsuario
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute('SELECT * FROM pedidos WHERE id_usuario = ?', [idUsuario]);
+
+    connection.end();
+    res.json(rows);
+  } catch (error) {
+    console.error("Error al cargar pedidos:", error);
+    res.status(500).json({ success: false, message: "Error al cargar pedidos" });
+  }
+});
+
+app.get('/traer-pedidos-admin', async (req,res)=>{
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute('select * from pedidos')
+    connection.end()
+
+    res.json(rows)
+  } catch (error) {
+    console.log('error al traer pedidos' + error)
+    res.status(500).json({success: false, message: "Error al traer pedidos"})
+  }
+})
+
+// Ruta para agregar una nueva noticia
+app.post('/nueva-noticia', async (req, res) => {
+  try {
+    const { encabezado, url_imagen, texto_noticia } = req.body;
+
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Insertar la nueva noticia en la base de datos
+    const [result] = await connection.execute(
+      'INSERT INTO noticias (encabezado, url_imagen, texto_noticia) VALUES (?, ?, ?)',
+      [encabezado, url_imagen, texto_noticia]
+    );
+
+    connection.end();
+
+    res.status(201).json({ message: 'Noticia agregada correctamente', insertedId: result.insertId });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Hubo un error al agregar la noticia' });
+  }
+});
+
+// Ruta para eliminar una noticia por ID
+app.delete('/eliminar-noticia/:id', async (req, res) => {
+  try {
+    const noticiaId = req.params.id;
+
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Eliminar la noticia de la base de datos
+    const [result] = await connection.execute(
+      'DELETE FROM noticias WHERE id = ?',
+      [noticiaId]
+    );
+
+    connection.end();
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ message: 'Noticia no encontrada' });
+    } else {
+      res.status(200).json({ message: 'Noticia eliminada correctamente' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Hubo un error al eliminar la noticia' });
+  }
+});
+
+// Ruta para obtener todas las noticias
+app.get('/noticias', async (req, res) => {
+  try {
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Obtener todas las noticias de la base de datos
+    const [rows] = await connection.execute('SELECT * FROM noticias');
+
+    connection.end();
+
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Hubo un error al obtener las noticias' });
+  }
+});
+
+
+// Ruta para editar una noticia por ID
+app.put('/editar-noticia/:id', async (req, res) => {
+  try {
+    const noticiaId = req.params.id;
+    const { encabezado, url_imagen, texto_noticia } = req.body;
+
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Actualizar la noticia en la base de datos
+    const [result] = await connection.execute(
+      'UPDATE noticias SET encabezado = ?, url_imagen = ?, texto_noticia = ? WHERE id = ?',
+      [encabezado, url_imagen, texto_noticia, noticiaId]
+    );
+
+    connection.end();
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ message: 'Noticia no encontrada' });
+    } else {
+      res.status(200).json({ message: 'Noticia editada correctamente' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Hubo un error al editar la noticia' });
+  }
+});
 
 
 const PORT = 5000;

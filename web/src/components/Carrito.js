@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/ContextCarrito';
+import { json } from 'react-router-dom';
 
-const Carrito = () => {
-  const { cartItems } = useCart();
+const Carrito = ({userId}) => {
+  const { cartItems,vaciarCarrito} = useCart();
+  const id = userId;
   
   // Estado para mantener los precios totales por producto
   const [preciosTotales, setPreciosTotales] = useState({});
@@ -46,6 +48,34 @@ const Carrito = () => {
     return totalProducto > 0 ? Math.max(Math.floor(totalProducto / precio), newMinimo) : newMinimo;
   };
 
+  const EnviarPedido = async (total) => {
+    if(cartItems){
+    const Pedido = {
+      id_usuario: id,
+      monto_total: total,
+      productos: cartItems,
+      estado: 'Pendiente'}
+  
+
+  const PedidoUsuario = await fetch('http://localhost:5000/nuevo-pedido',{
+  method: 'POST',
+  headers :{
+    'Content-Type': 'application/json'
+  },
+  body:JSON.stringify(Pedido),
+
+  })
+  const PedidoResponse = await PedidoUsuario.json()
+
+  if(PedidoResponse.success){
+    alert('Compra realizada: '+ PedidoResponse.message);
+  }
+
+  else{alert('No se pudo realizar la compra: '+ PedidoResponse.message)}
+    }
+  
+  else{alert('el carrito esta vacio')}
+}
   return (
     <div>
       <h2>Carrito de compras</h2>
@@ -69,6 +99,8 @@ const Carrito = () => {
         ))}
       </ul>
       <p>Total del carrito: ${total}</p>
+      <button onClick={()=>{EnviarPedido(total)}}>Comprar</button>
+      <button onClick={()=>{vaciarCarrito()}}>Vaciar Carrito</button>
     </div>
   );
 };
