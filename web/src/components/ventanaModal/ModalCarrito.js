@@ -17,16 +17,13 @@ const CarritoModal = ({userId}) => {
   return (
     <div>
       {/* Botón o enlace para abrir la ventana emergente */}
-      <button onClick={openModal}>Ver Carrito</button>
+      <img onClick={openModal} src='http://localhost:5000/uploads/carrito.png'/>
 
       {/* Ventana emergente (modal) */}
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={closeModal}>&times;</span> {/* Botón para cerrar la ventana emergente */}
-            <h2>Carrito de Compras</h2>
-            <Carrito userId = {userId}/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
-          </div>
+        <div className="modal-carrito">
+          <span className="close" onClick={closeModal}>&times;</span> {/* Botón para cerrar la ventana emergente */}
+          <Carrito userId = {userId}/> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
         </div>
       )}
     </div>

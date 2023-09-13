@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/ContextCarrito'; 
 import { Link } from 'react-router-dom';
-
+import '../styles/noticias.css'
+import { useNavigate } from 'react-router-dom';{}
+ 
 const Noticias = () => {
   const [noticias, setNoticias] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editedData, setEditedData] = useState({ encabezado: '', url_imagen: '', texto_noticia: '' });
   const {admind} = useCart()
+  const history = useNavigate()
 
 
+  const Atras=()=>{
+    history('/')
+  }
   useEffect(() => {
     // Aquí puedes realizar la llamada a la API para obtener las noticias
     fetch('http://localhost:5000/noticias')  // Asegúrate de que la ruta coincida con tu servidor
@@ -66,14 +72,14 @@ const Noticias = () => {
   };
 
   return (
-  <div>
+  <div className='noticias-container'>
     <h1>Noticias</h1>
     
-    <ul>
+    <ul className='noticias__menu'>
       {noticias.map(noticia => (
-        <li key={noticia.id}>
+        <li className='noticias__menu-li' key={noticia.id}>
           {editingId === noticia.id ? (
-            <div>
+            <div className='editar-noticia'>
               <input
                 type="text"
                 value={editedData.encabezado}
@@ -91,24 +97,29 @@ const Noticias = () => {
               <button onClick={handleSaveEdit}>Guardar</button>
             </div>
           ) : (
-            <div>
-              <h2>{noticia.encabezado}</h2>
-              <img src={`http://localhost:5000/${noticia.url_imagen}`}
+            <div className='noticas__menu-noticia'>
+              <img className='noticias__menu-noticia-img' src={`http://localhost:5000/${noticia.url_imagen}`}
               alt={`Imagen de ${noticia.nombre_producto}`} />
+              <div className='noticias__menu-contenido'>
+              <h2>{noticia.encabezado}</h2>
               <p>{noticia.texto_noticia}</p>
-              
+              </div>
               {admind && (
-                <div>
-                  <button onClick={() => handleEdit(noticia.id)}>Editar</button>
-                  <button onClick={() => handleDelete(noticia.id)}>Eliminar</button>
+                <div className='noticias__menu__botones'>
+                  <button className='noticias__menu__botones-botones' onClick={() => handleEdit(noticia.id)}>Editar</button>
+                  <button className='last noticias__menu__botones-botones' onClick={() => handleDelete(noticia.id)}>Eliminar</button>
                 </div>
               )}
-              {admind && <Link to="/Nnoticia"><button>Nueva Noticia</button></Link>}
             </div>
           )}
         </li>
       ))}
     </ul>
+    {admind && <>
+      <Link to="/Nnoticia"><button className='  noticias__menu__botones-botones'>Nueva Noticia</button></Link>
+      </>}
+      <button onClick={()=>{Atras()}} className='last noticias__menu__botones-botones'>Atras</button>
+    
   </div>
 );
 

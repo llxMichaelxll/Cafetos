@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NuevaNoticia = () => {
   const [encabezado, setEncabezado] = useState('');
   const [urlImagen, setUrlImagen] = useState('');
   const [textoNoticia, setTextoNoticia] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const history = useNavigate()
 
   const handleImageChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -50,6 +52,7 @@ const NuevaNoticia = () => {
         if (noticiaResponse.status === 201) {
           console.log('Noticia agregada correctamente');
           // Lógica para redirigir o mostrar un mensaje de éxito
+          history('/noticias')
         } else {
           console.error('Error al agregar la noticia');
         }

@@ -20,12 +20,10 @@ const ContactoModal = () => {
 
       {/* Ventana emergente (modal) */}
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
+          <div className="ventana-conacto-modal__content">
             <span className="close" onClick={closeModal}>&times;</span> {/* Botón para cerrar la ventana emergente */}
             <Contacto /> {/* Mostrar el contenido del carrito utilizando el componente Carrito */}
           </div>
-        </div>
       )}
     </div>
   );

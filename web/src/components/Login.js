@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import { useCart } from "../context/ContextCarrito";
 
-const Login = ({ setRol }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const history = useNavigate();
@@ -28,9 +28,9 @@ const Login = ({ setRol }) => {
       .then((data) => {
         if (data.success) {
           console.log('Inicio de sesión exitoso. Rol del usuario:', data.rol, data.nombre,data.id_usuario);
-          setIdUsuario(data.id_usuario);
-          setUserRol(data.rol);
-          setRol(data.rol, data.nombre, data.token, data.id_usuario); // Passing the token to the setRol function
+           // Passing the token to the setRol function
+          localStorage.setItem('user',JSON.stringify(data))
+          setIdUsuario(data.id_usuario)
           history('/'); // Navigating back to the main page
 
         } else {
@@ -43,7 +43,7 @@ const Login = ({ setRol }) => {
   };
 
   const handleCancel = () => {
-    setRol('guest');
+    // setRol('guest');
     history('/');
   };
 

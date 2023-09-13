@@ -1,30 +1,111 @@
 /* Estilos para la ventana emergente (modal) */
-.modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 50%;
-    background-color: rgba(232, 158, 19, 0.7);
-    z-index: 9999;
-  }
-  
-  .modal-content {
-    background-color: #fff;
+.modal-content-carrito ul {
+  padding: 0;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.carrito-item {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  border-bottom: solid 1px gray;
+  margin: 8px 0;
+  padding: 8px 0;
+}
+
+.carrito-item:last-child {
+  border-bottom: none;
+}
+
+.carrito-item__imagen{
+  width: 100%;
+  height: 40px;
+}
+
+.carrito-item__imagen img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.carrito-item__nombre {
+  font-size: 1rem;
+}
+
+.carrito-item__precio, .carrito-item__subtotal {
+  font-size: 0.85rem;
+}
+
+.carrit_acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.carrito-item__disminuir, .carrito-item__aumentar {
+  min-width: 20px;
+  height: 16px;
+  line-height: 1;
+}
+
+.modal-carrito{
+  background-color: #fff;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    width: 400px; /* Ajusta el ancho de la ventana emergente según tus necesidades */
+    width: 320px; /* Ajusta el ancho de la ventana emergente según tus necesidades */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: auto;
+    z-index: 9999;
   }
   
+  .modal-content-carrito {
+    width: 100%;
+    height: auto;
+  }
+
+  .modal-carrito__acciones {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .modal-carrito__acciones button {
+    padding: 4px 2px;
+    width: 100%;
+    min-width: 120px;
+    border-radius: 11px;
+    border: none;
+    font-weight: 600;
+  }
+
+  .modal-carrito__acciones button:nth-child(1) {
+    background-color: green;
+  }
+
+  .modal-carrito__acciones button:nth-child(2) {
+    background-color: red;
+  }
+
   /* Estilos para el botón de cerrar la ventana emergente */
   .close {
     position: absolute;
-    top: 40px;
-    right: 40px;
+    top: 16px;
+    right: 16px;
     cursor: pointer;
     font-size: 20px;
   }

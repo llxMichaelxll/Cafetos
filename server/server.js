@@ -186,7 +186,7 @@ app.post("/login", async (req, res) => {
 
     // Consultar el usuario por correo y contraseña
     const [rows] = await connection.execute(
-      "SELECT nombre_usuario, correo_electronico, id_usuario, rol FROM usuarios WHERE correo_electronico = ? AND contrasena = ?",
+      "SELECT nombre_cliente, correo_electronico, id_cliente, rol FROM clientes WHERE correo_electronico = ? AND contrasena = ?",
       [correo_electronico, contrasena]
     );
 
@@ -195,7 +195,7 @@ app.post("/login", async (req, res) => {
     if (rows.length === 1) {
       // Login exitoso, generar un token JWT
       const token = jwt.sign(
-        { userId: rows[0].id_usuario, role: rows[0].rol },
+        { userId: rows[0].id_cliente, role: rows[0].rol },
         "qpwoeiruty", // Reemplazar 'secretKey' con una clave segura
         { expiresIn: "1h" } // Opcional: expiración del token
       );
@@ -204,20 +204,20 @@ app.post("/login", async (req, res) => {
 
       res.json({
         success: true,
-        nombre: rows[0].nombre_usuario,
+        nombre: rows[0].nombre_cliente,
         rol: rows[0].rol,
         token: token, // Enviar el token al cliente,
-        id_usuario: rows[0].id_usuario,
+        id_usuario: rows[0].id_cliente,
       });
     } else {
       // Credenciales inválidas
       res.json({ success: false, message: "Credenciales inválidas" });
     }
   } catch (err) {
-    console.error("Error al autenticar al usuario:", err);
+    console.error("Error al autenticar al cliente:", err);
     res
       .status(500)
-      .json({ success: false, message: "Error al autenticar al usuario" });
+      .json({ success: false, message: "Error al autenticar al cliente" });
   }
 });
 
@@ -378,7 +378,7 @@ app.post("/verificar-correo", async (req, res) => {
 
     // Consultar si el correo electrónico ya está registrado
     const [rows] = await connection.execute(
-      "SELECT COUNT(*) as count FROM usuarios WHERE correo_electronico = ?",
+      "SELECT COUNT(*) as count FROM clientes WHERE correo_electronico = ?",
       [correo_electronico]
     );
 
@@ -428,7 +428,7 @@ app.post("/reg", async (req, res) => {
 
     // Insertar el nuevo usuario en la tabla de usuarios
     const [result] = await connection.execute(
-      "INSERT INTO usuarios (nombre_usuario, correo_electronico, id_ciudad, contrasena, rol, direccion) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO clientes (nombre_cliente, correo_electronico, id_ciudad, contrasena, rol, direccion) VALUES (?, ?, ?, ?, ?, ?)",
       [
         nombre_usuario,
         correo_electronico,
@@ -447,10 +447,10 @@ app.post("/reg", async (req, res) => {
     // Registro exitoso, enviar una respuesta de éxito con el ID del usuario
     res.json({ success: true, message: "Registro exitoso", userId });
   } catch (err) {
-    console.error("Error al registrar al usuario:", err);
+    console.error("Error al registrar al cliente:", err);
     res
       .status(500)
-      .json({ success: false, message: "Error al registrar al usuario" });
+      .json({ success: false, message: "Error al registrar al cliente" });
   }
 });
 
@@ -645,12 +645,12 @@ app.post('/nuevo-pedido', async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(dbConfig);
-    const [result] = await connection.execute('INSERT INTO pedidos (id_usuario, monto_total, productos, estado) VALUES (?, ?, ?, ?)', [id_usuario, monto_total, productos, estado]);
+    const [result] = await connection.execute('INSERT INTO pedidos (id_cliente, monto_total, productos, estado) VALUES (?, ?, ?, ?)', [id_usuario, monto_total, productos, estado]);
 
     const id_pedido = result.insertId; // Obtén la ID del pedido recién insertado
 
     // Insertar en la tabla intermedia pedidos_usuario
-    await connection.execute('INSERT INTO pedidos_usuario (id_usuario, id_pedido) VALUES (?, ?)', [id_usuario, id_pedido]);
+    // await connection.execute('INSERT INTO pedidos_usuario (id_usuario, id_pedido) VALUES (?, ?)', [id_usuario, id_pedido]);
 
     connection.end();
     res.json({ success: true, message: "pedido completo" });
@@ -668,7 +668,7 @@ app.get('/traer-pedidos-usuario/:idUsuario', async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute('SELECT * FROM pedidos WHERE id_usuario = ?', [idUsuario]);
+    const [rows] = await connection.execute('SELECT * FROM pedidos WHERE id_cliente = ?', [idUsuario]);
 
     connection.end();
     res.json(rows);

@@ -4,11 +4,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f1f1f1;
+    background-color: #a35c25;
+    position: relative;
   }
+  /* menu.css */
+.user-actions {
+  position: absolute;
+  top: 70%; /* Ajusta la posición vertical según sea necesario */
+  right: 65px; /* Ajusta la posición horizontal según sea necesario */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+a:-webkit-any-link{
+  color: black;
+}
+
+.user-button {
+  margin-left: 10px; /* Espacio entre los botones si es necesario */
+}
+
   
   img{
-    width: 200px;  
+    width: 60px;
     height: auto;
 }
   .menu-nav {
@@ -26,30 +45,29 @@
   li {
     margin: 20px;
     font-size: 18px;
-    color: #333;
+    color: black;
   }
   
   li:last-child {
     margin-right: 0;
   }
 
-  /* .menu-nav ul li:hover{
+  .menu-nav ul li:hover {
     -webkit-transform: scale(1.3);
     -ms-transform: scale(1.3);
     transform: scale(1.3);
-    transition: transfrom.5s;
-  } */
+    transition: transform 0.20s; /* Corrección del nombre de la propiedad y ajuste del tiempo de transición */
+  }
+  
 
   .botones{
     display: flex;
+    align-items: center;
   }
-
-  .botones button{
-    margin-left:  2px;
-    margin-right:  2px;
-    border: 2px solid;
-    border-radius: 5px;
-    background-color:rgba(239, 170, 42, 0.5) ;
+  .botones img{
+    width: 100%;
+    height: 50px;
+    cursor: pointer;
   }
   
   /* Estilos para pantallas más pequeñas */
@@ -68,4 +86,105 @@
       margin-bottom: 10px;
     }
   }
-  
+  .menu-iconos{
+    display: grid;
+    grid-template-columns: 0.4fr 0.4fr;
+  }
+
+  /* Establece el contenedor como posición relativa */
+.menu-iconos-container {
+  position: relative;
+  display: flex;
+  align-items: center; /* Alinea verticalmente los elementos */
+}
+
+/* Establece los botones como posición absoluta y ocultos inicialmente */
+.botones-perfil {
+  position: absolute;
+ display: hidden;
+  transform: translateX(-50%);
+  text-align: center;
+  opacity: 0;
+  transition: bottom 1s ease, opacity 1s ease;
+  z-index: 2;
+}
+
+/* Cuando se pasa el mouse sobre el contenedor, muestra los botones */
+.menu-iconos-container:hover .botones-perfil {
+  bottom: -10px; /* Cambia -10px para ajustar la posición vertical */
+  opacity: 1;
+  display: block;
+}
+/* Aplica estilos específicos para los botones */
+.cerrar-sesion {
+  position: relative;
+  top: 110px;
+  left: 150px;
+  min-width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(70, 147, 241);
+  font-size: 1rem;
+}
+.mi-perfil{
+  position: relative;
+  top: 60px;
+  left: 40px;
+  min-width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(70, 147, 241);
+  font-size: 1rem;
+} 
+
+
+.login__boton{
+  position: relative;
+  top: 110px;
+  left: 126px;
+  min-width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(70, 147, 241);
+  font-size: 1rem;
+}  
+
+.registro-boton{
+  position: relative;
+  top: 60px;
+  left: 20px;
+  min-width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(70, 147, 241);
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .mi-perfil {
+    position: relative;
+    top: 51px;
+    left: 88px;
+    min-width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(70, 147, 241);
+    font-size: 1rem;
+  }
+  .cerrar-sesion {
+    position: relative;
+    top: 101px;
+    left: 190px;
+    min-width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(70, 147, 241);
+    font-size: 1rem;
+}
+}

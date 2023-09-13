@@ -1,13 +1,14 @@
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
+import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Importar los estilos del carrusel
 import '../styles/carousel.css'
 
 
 const images = [
-  'http://localhost:5000/uploads/169076727802814.png',
-  'http://localhost:5000/uploads/169076764263112.jpg',
-  'http://localhost:5000/uploads/16907677175269.jpg',
+  'http://localhost:5000/uploads/16936360836121.png',
+  'http://localhost:5000/uploads/16936362493452.png',
+  'http://localhost:5000/uploads/16936362727613.png',
   // Agrega más rutas de imagen si es necesario
 ];
 

@@ -1,0 +1,38 @@
+  
+  .modal-content {
+    position: absolute;
+    z-index: 9999;
+    top: 124%;
+    right: -114%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 500px; /* Ajusta el ancho de la ventana emergente según tus necesidades */
+  }
+  
+  /* Estilos para el botón de cerrar la ventana emergente */
+  .close {
+    position: absolute;
+    top: 40px;  
+    right: 16px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  /* Estilos para el título "Carrito de Compras" */
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  li {
+    cursor: pointer;
+  }
+
+
+  .registro__boton{
+    position: relative;
+    top: 70px;
+    left: 20px;
+    background-color: blue;
+  } 

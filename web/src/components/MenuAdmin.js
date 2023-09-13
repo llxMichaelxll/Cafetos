@@ -8,7 +8,7 @@ import '../styles/menuAdmind.css';
 
 const MenuAdmin = ({ userToken }) => {
   const handleLogoutClick = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
     window.location.href = '/';
   };
 

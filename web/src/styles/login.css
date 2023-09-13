@@ -7,7 +7,13 @@
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
-  }
+    position: absolute;
+    top: 25%;
+    right: 24%;
+    width: 41%;
+    display: flex;
+    flex-direction: column;
+}
   
   .Login h2 {
     /* Estilos para el título "Iniciar Sesión" */
@@ -17,7 +23,7 @@
   .Login input {
     /* Estilos para los campos de entrada */
     display: block;
-    width: 100%;
+    width: 92%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;

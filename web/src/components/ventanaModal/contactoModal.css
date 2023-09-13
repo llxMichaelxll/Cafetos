@@ -1,5 +1,5 @@
 /* Estilos para la ventana emergente (modal) */
-.modal {
+.ventana-conacto-modal__content {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import './styles/App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useCart } from './context/ContextCarrito';
+import { BrowserRouter as Router, Routes, Route,useLocation } from 'react-router-dom';
 import MenuAdmin from './components/MenuAdmin';
 import NuevaNoticia from './components/Admin/NuevaNoticia';
 import Mensajes from './components/Mensajes';
@@ -15,30 +16,38 @@ import Noticias from './components/Noticias';
 import ContactoModal from '../src/components/ventanaModal/ModalContacto';
 import PedidosUsuario from './components/PedidosUsuario';
 import PedidosAdmin from './components/PedidosAdmin';
+import CarritoModal from './components/ventanaModal/ModalCarrito';
 // import jwt from 'jsonwebtoken'; // Importa jsonwebtoken
 
 
 
 const App = () => {
+  return (
+    <Router>
+      <Inner></Inner>
+    </Router>
+  );
+};
+
+function Inner() {
+  const location = useLocation();
   const [userRole, setUserRole] = useState('guest');
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showNombre, setShownombre] = useState('');
   const [userToken, setUserToken] = useState(localStorage.getItem('authToken') || null);
   const [userId, setUserId] = useState('')
+  const {setUserRol} = useCart()
 
  
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    if (storedToken) {
-      setUserToken(storedToken);
-      // Realizar cualquier otra acción necesaria con el token, como verificar su validez
-      
+    let storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      storedUser = JSON.parse(storedUser);
+      handleLoginSuccess(storedUser.rol, storedUser.nombre, storedUser.token, storedUser.id_usuario);
+      console.log('este es: ',storedUser)
     }
-  }, [userToken]);
+  }, [location]);
   
-
-  
-
   const handleLoginClick = () => {
     setShowLoginForm(true);
   };
@@ -55,6 +64,7 @@ const App = () => {
 
   const handleLoginSuccess = (role, nombre, token, userId) => {
     setUserRole(role);
+    setUserRol(role)
     setUserId(userId);
     setShownombre(nombre);
     setUserToken(token);
@@ -62,24 +72,18 @@ const App = () => {
     localStorage.setItem('authToken', token);
   };
 
-  
-  
-  
   return (
-    <Router>
       <div>
-        {showLoginForm ? (
+        {/* {showLoginForm ? (
           // Mostrar el formulario de inicio de sesión si showLoginForm es verdadero
           <Login setRol={handleLoginSuccess} />
         ) : (
-          // Mostrar el menú adecuado según el rol del usuario
+          // Mostrar el menú adecuado según el rol del usuario */}
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  {/* {showNombre && <h1>{showNombre}</h1>} */}
-
                   {userRole === 'admin' && (
                     <>
                       <MenuAdmin />
@@ -96,7 +100,7 @@ const App = () => {
                 </>
               }
             />
-            <Route path="/registro" element={<Registro />} /> {/* Agregamos esta línea para la ruta de registro */}
+            <Route path="/registro" element={<Registro />} />
             <Route path="/nuevo-producto" element={<NuevoProducto />} />
             <Route path="/menu-admin" element={<MenuAdmin />} />
             <Route path="/carrito" element={<Carrito/>} />
@@ -104,6 +108,7 @@ const App = () => {
             <Route path="/contacto-modal" element={<ContactoModal />} />
             <Route path="/sobre_nosotros" element={<SobreNosotros />} />
             <Route path="/noticias" element={<Noticias/>} />
+            <Route path="/carrito-modal" element={<CarritoModal/>} />
             <Route path="/login" element={<Login/>} />
             <Route path="/Nnoticia" element={<NuevaNoticia/>}/>
             <Route path="/admin-pedidos" element={<PedidosAdmin/>} />
@@ -112,10 +117,9 @@ const App = () => {
 
 
           </Routes>
-        )}
+        {/* )} */}
       </div>
-    </Router>
   );
-};
+}
 
 export default App;
