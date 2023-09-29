@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import '../styles/ventas.css'
 
 const Ventas = () => {
   const [ventas, setVentas] = useState([]);
   const [totalVentas, setTotalVentas] = useState(0);
   const [sortBy, setSortBy] = useState(""); // Estado para rastrear el criterio de ordenación
+  const history = useNavigate()
 
   useEffect(() => {
     // Hacer una solicitud GET al servidor para obtener los datos de ventas
@@ -73,6 +75,7 @@ const Ventas = () => {
         </tbody>
       </table>
       <div>Total de Ventas: ${totalVentas.toFixed(1)}</div>
+      <button onClick={()=>{history('/')}}>Atras</button>
     </div>
   );
 };
