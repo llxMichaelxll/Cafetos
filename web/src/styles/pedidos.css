@@ -1,12 +1,24 @@
 .targeta__pedidos__producto{
     display: flex;
+    background-color: #000000ce;
 }
 
 .targeta__pedidos{
     display: grid;
     grid-template-columns: 0.5fr 1fr;
     /* margin-bottom: 20px; */
-    border-bottom: 2px solid;
+    margin-bottom: 30px;
+
+}
+@media (max-width:600px){
+    .targeta__pedidos{
+        grid-template-columns: 1fr;
+        /* margin-bottom: 20px; */
+    }
+    .targeta__pedidos__contenido{
+        /* margin-bottom: 30px; */
+        padding-top: 10px;
+    }
 }
 .targeta__pedidos:nth-child(1){
     display: grid;
@@ -20,25 +32,34 @@
     justify-content: center;
     align-items: center;
     border-right: 2px solid;
+    background-color: #000000ce;
+
 }
 .targeta__pedidos__contenido button{
     width: 200px;
     height: 40px;
-    background-color: rgb(70, 147, 241);
+    background-color: #e2752b;
     margin:2px 2px 2px 0px;
     cursor: pointer;
     font-size: 16px;
-    position: relative;
-    bottom: -20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.1rem;
+    margin-top: 20px;
 }
 .pedidos__button-atras{
     width: 100px;
     height: 40px;
-    background-color: rgb(5, 45, 95);
+    background-color: rgb(251, 40, 12);
     margin:2px 2px 2px 0px;
     cursor: pointer;
     font-size: 16px;
     color: aliceblue;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    margin: 3px;
 }
 
 .targeta__pedidos__contenido p{
@@ -48,7 +69,79 @@
     width: 100%;
     height: 150px;
 }
-.targeta__pedidos__producto p{
-    text-align: center;
+
+.ventana-detalles{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
+    width: 50%;
+    height: 100%;
+    top: 0px;
+    right: 0px;
+    padding-left: 10px;
+    background-color: rgba(0, 0, 0, 0.80);
 }
 
+@media (max-width:480px) {
+    .ventana-detalles{
+        width: 100%;
+    }
+}
+.detalels-pedido-p{
+    font-size: 1.1rem;
+    margin-bottom: 50px;
+    color: white;
+}
+
+.p-div{
+    width: 100%;
+    height: auto;
+    border: 1px solid;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: white ;
+}
+.p-div:hover{
+    color: blue;
+    cursor:pointer ;
+}
+
+.detalles-pedido{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.alerta-verde-estado{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(28, 236, 9);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}
+
+.pedidos-p{
+    font-size: 1.1rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.strong-pedido{
+    color: white !important;
+}
+
+.select-pedido{
+    font-size: 1.1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+}

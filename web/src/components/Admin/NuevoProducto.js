@@ -11,6 +11,10 @@ const NuevoProducto = () => {
   const [urlImagen, setUrlImagen] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [existencias,setExistecias] = useState('');
+  const [Alerta, setAlerta] = useState(false);
+  const [texAlert, SetTexAlert] = useState("");
+  const [clase, stepClase] = useState("");
+
 
   useEffect(() => {
     // Obtener la lista de categorías desde el servidor al cargar el componente
@@ -34,14 +38,24 @@ const NuevoProducto = () => {
 
     try {
       if (!imagen) {
-        console.error('Error al subir la imagen: No se ha seleccionado un archivo');
+        SetTexAlert("debes de seleccionar una imagen");
+            stepClase("alerta-roja-nproducto");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 3000);
         return;
       }
-      else if(!nombreProducto|| !descripcion || !idCategoria || !precio || !urlImagen || !categorias || !existencias)
+      else if(!nombreProducto|| !descripcion || !idCategoria || !precio || !categorias || !existencias)
       {
-        
+        SetTexAlert("Debes completar todos los campos");
+            stepClase("alerta-roja-nproducto");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 3000);
+            return;
       }
-
       const formData = new FormData();
       formData.append('file', imagen);
 
@@ -81,12 +95,22 @@ const NuevoProducto = () => {
 
         // Verificamos si el registro fue exitoso
         if (dataProductoResponse.success) {
-          alert('Producto guardado:', dataProductoResponse.message);
+          SetTexAlert("Producto guardado");
+            stepClase("alerta-verde-nproducto");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 3000);
           // Aquí puedes redirigir al usuario o mostrar un mensaje de éxito
 
           resetForm()
         } else {
-          alert.error('Error al guardar producto:', dataProductoResponse.message);
+          SetTexAlert("Error al guardar producto");
+            stepClase("alerta-roja-nproducto");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 3000);
           // Aquí puedes mostrar un mensaje de error al usuario si el registro no fue exitoso
         }
       } else {
@@ -133,10 +157,11 @@ const NuevoProducto = () => {
         </div>
         <div>
           {urlImagen && <p>Ruta de la imagen: {urlImagen}</p>}
-          <button type="submit">Subir Imagen y Guardar Producto</button>
+          <button type="submit">Guardar Producto</button>
           <Link to="/menu-admin">Volver a la página de inicio</Link>
         </div>
       </form>
+      {Alerta&&<p className={clase}>{texAlert}</p>}
     </div>
   );
 };

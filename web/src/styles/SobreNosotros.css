@@ -1,0 +1,71 @@
+/* Estilos para el contenedor principal */
+.sobre-nosotros {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+  /* Estilos para el título principal */
+  .sobre-nosotros h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para el párrafo de introducción */
+  .sobre-nosotros p:first-of-type {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos para los párrafos de información */
+  .sobre-nosotros p {
+    font-size: 16px;
+    color: #666;
+    margin: 10px 0;
+  }
+  
+  /* Estilos para el número de contacto */
+  .sobre-nosotros p:last-of-type {
+    font-size: 20px;
+    color: #ff6f61;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  /* Estilos para hashtags */
+  .sobre-nosotros p:last-of-type + p {
+    font-size: 14px;
+    color: #888;
+  }
+  
+  /* Estilos para dispositivos más pequeños */
+  @media (max-width: 600px) {
+    .sobre-nosotros {
+      padding: 20px;
+    }
+  
+    .sobre-nosotros h2 {
+      font-size: 24px;
+    }
+  
+    .sobre-nosotros p {
+      font-size: 14px;
+    }
+  }
+  
+  .sobreNosotros-button{
+    width: 60px;
+    height: 40px;
+    background-color: orange;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }

@@ -40,7 +40,319 @@ app.use(
   })
 );
 
-app.post("/verificar-codigo", async (req, res) => {
+//Recuperar contraseña
+
+// Endpoint para enviar un código de recuperación de contraseña
+// app.get('/recuperar-contrasena/:email', async (req, res) => {
+//   const { email } = req.params;
+
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+
+//     // Verificar si el correo electrónico está registrado en la base de datos
+//     const [rows] = await connection.execute(
+//       'SELECT COUNT(*) as count FROM clientes WHERE correo_electronico = ?',
+//       [email]
+//     );
+
+//     if (rows[0].count === 0) {
+//       // El correo electrónico no está registrado
+//       res.json({
+//         success: false,
+//         message: 'El correo electrónico no está registrado',
+//       });
+//       return;
+//     }
+
+//     // Generar un código de recuperación de contraseña
+//     const codigoRecuperacion = generateRandomCode();
+
+//     // Guardar el código en la tabla codigos_validacion
+//     await connection.execute(
+//       'INSERT INTO codigos_validacion (codigo, correo_electronico, creado_en) VALUES (?, ?, NOW())',
+//       [codigoRecuperacion, email]
+//     );
+
+//     // Enviar el código de recuperación por correo electrónico
+//     const mailOptions = {
+//       from: 'cafeCafetosCoff@hotmail.com',
+//       to: email,
+//       subject: 'Código de Recuperación de Contraseña',
+//       text: `Tu código de recuperación de contraseña es: ${codigoRecuperacion}`,
+//     };
+
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.error('Error al enviar el correo electrónico:', error);
+//         res.status(500).json({
+//           success: false,
+//           message: 'Error al enviar el código de recuperación por correo electrónico',
+//         });
+//         return;
+//       }
+
+//       console.log('Código de recuperación enviado:', info.response);
+
+//       res.json({
+//         success: true,
+//         message: 'Código de recuperación enviado por correo electrónico',
+//       });
+//     });
+//   } catch (error) {
+//     console.error('Error al procesar la solicitud:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error al generar el código de recuperación de contraseña',
+//     });
+//   }
+// });
+
+// // Endpoint para verificar el código y obtener los datos del usuario
+// app.post('/verificar-codigo', async (req, res) => {
+//   const { email, codigo } = req.body;
+
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+
+//     // Verificar si el código es válido para el correo electrónico dado
+//     const [rows] = await connection.execute(
+//       'SELECT * FROM codigos_validacion WHERE correo_electronico = ? AND codigo = ? AND TIMESTAMPDIFF(HOUR, creado_en, NOW()) <= 24',
+//       [email, codigo]
+//     );
+
+//     if (rows.length === 0) {
+//       // Código no válido o ha expirado
+//       return res.json({
+//         success: false,
+//         message: 'Código de recuperación no válido o ha expirado',
+//       });
+//     }
+
+//     // Código válido, obtén los datos del usuario
+//     const [userData] = await connection.execute(
+//       'SELECT * FROM clientes WHERE correo_electronico = ?',
+//       [email]
+//     );
+
+//     if (userData.length === 0) {
+//       // El correo electrónico no está registrado
+//       return res.json({
+//         success: false,
+//         message: 'El correo electrónico no está registrado',
+//       });
+//     }
+
+//     // Devuelve los datos del usuario para permitir la edición de la contraseña
+//     res.json({
+//       success: true,
+//       message: 'Código de recuperación válido',
+//       userData: userData[0],
+//     });
+//   } catch (error) {
+//     console.error('Error al verificar el código y obtener los datos del usuario:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error al verificar el código de recuperación',
+//     });
+//   }
+// });
+
+// // Endpoint para actualizar la contraseña
+// app.post('/actualizar-contraseña', async (req, res) => {
+//   const { email, nuevaContraseña } = req.body;
+
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+
+//     // Actualiza la contraseña del usuario en la base de datos
+//     await connection.execute(
+//       'UPDATE clientes SET contraseña = ? WHERE correo_electronico = ?',
+//       [nuevaContraseña, email]
+//     );
+
+//     // Elimina el código de recuperación utilizado
+//     await connection.execute(
+//       'DELETE FROM codigos_validacion WHERE correo_electronico = ?',
+//       [email]
+//     );
+
+//     res.json({
+//       success: true,
+//       message: 'Contraseña actualizada con éxito',
+//     });
+//   } catch (error) {
+//     console.error('Error al actualizar la contraseña:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error al actualizar la contraseña',
+//     });
+//   }
+// });
+
+/****************************** */
+
+app.get('/recuperar-contrasena/:email', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Verificar si el correo electrónico está registrado en la base de datos
+    const [rows] = await connection.execute(
+      'SELECT COUNT(*) as count FROM clientes WHERE correo_electronico = ?',
+      [email]
+    );
+
+    if (rows[0].count === 0) {
+      // El correo electrónico no está registrado
+      res.json({
+        success: false,
+        message: 'El correo electrónico no está registrado',
+      });
+      return;
+    }
+
+    // Generar un código de recuperación de contraseña
+    const codigoRecuperacion = generateRandomCode();
+
+    // Guardar el código en la tabla codigos_validacion
+    await connection.execute(
+      'INSERT INTO codigos_validacion (codigo, correo_electronico, creado_en) VALUES (?, ?, NOW())',
+      [codigoRecuperacion, email]
+    );
+
+    // Enviar el código de recuperación por correo electrónico
+    const mailOptions = {
+      from: 'cafeCafetosCoff@hotmail.com',
+      to: email,
+      subject: 'Código de Recuperación de Contraseña',
+      text: `Tu código de recuperación de contraseña es: ${codigoRecuperacion}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error al enviar el correo electrónico:', error);
+        res.status(500).json({
+          success: false,
+          message: 'Error al enviar el código de recuperación por correo electrónico',
+        });
+        return;
+      }
+
+      console.log('Código de recuperación enviado:', info.response);
+
+      res.json({
+        success: true,
+        message: 'Código de recuperación enviado por correo electrónico',
+      });
+    });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al generar el código de recuperación de contraseña',
+    });
+  }
+});
+
+//traer clientes
+app.get('/traer-cliente/:id_cliente', async (req, res) => {
+  const { id_cliente } = req.params;
+  
+  try {
+    // Crear conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consultar los detalles del cliente por su ID
+    const [rows] = await connection.execute(
+      'SELECT id_cliente, nombre_cliente, correo_electronico, id_ciudad, direccion, contrasena FROM clientes WHERE id_cliente = ?',
+      [id_cliente]
+    );
+
+    connection.end();
+
+    // Comprobar si se encontró un cliente con el ID especificado
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cliente no encontrado',
+      });
+    }
+
+    // Enviar los detalles del cliente como respuesta
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error al obtener los detalles del cliente:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener los detalles del cliente',
+    });
+  }
+});
+
+// verificar codigo para recuperar contraseña
+app.post('/verificar-codigo', async (req, res) => {
+  const { email, codigo, nuevaContraseña } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Verificar si el código es válido para el correo electrónico dado
+    const [rows] = await connection.execute(
+      'SELECT * FROM codigos_validacion WHERE correo_electronico = ? AND codigo = ? AND TIMESTAMPDIFF(HOUR, creado_en, NOW()) <= 24',
+      [email, codigo]
+    );
+
+    if (rows.length === 0) {
+      // Código no válido o ha expirado
+      return res.json({
+        success: false,
+        message: 'Código de recuperación no válido o ha expirado',
+      });
+    }
+
+    // Código válido, obtén los datos del usuario
+    const [userData] = await connection.execute(
+      'SELECT * FROM clientes WHERE correo_electronico = ?',
+      [email]
+    );
+
+    if (userData.length === 0) {
+      // El correo electrónico no está registrado
+      return res.json({
+        success: false,
+        message: 'El correo electrónico no está registrado',
+      });
+    }
+
+    // Actualiza la contraseña del usuario en la base de datos
+    await connection.execute(
+      'UPDATE clientes SET contrasena = ? WHERE correo_electronico = ?',
+      [nuevaContraseña, email]
+    );
+
+    // Elimina el código de recuperación utilizado
+    await connection.execute(
+      'DELETE FROM codigos_validacion WHERE correo_electronico = ?',
+      [email]
+    );
+
+    res.json({
+      success: true,
+      message: 'Contraseña actualizada con éxito',
+    });
+  } catch (error) {
+    console.error('Error al actualizar la contraseña:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al actualizar la contraseña',
+    });
+  }
+});
+
+/********************************** */
+//Verificar
+app.post("/verificar-codigo-registro", async (req, res) => {
   const { correo_electronico, codigo_validacion } = req.body;
 
   try {
@@ -82,13 +394,13 @@ app.post("/enviar-respuesta", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
-        user: "cafecafetos@hotmail.com",
+        user: "cafeCafetosCoff@hotmail.com",
         pass: "CaFeToSs4menos1",
       },
     });
 
     const mailOptions = {
-      from: "cafecafetos@hotmail.com",
+      from: "cafeCafetosCoff@hotmail.com",
       to: correo,
       subject: "Respuesta a tu mensaje",
       text: mensaje,
@@ -108,7 +420,7 @@ app.post("/enviar-respuesta", async (req, res) => {
 const transporter = nodemailer.createTransport({
   service: "hotmail",
   auth: {
-    user: "cafecafetos@hotmail.com",
+    user: "cafeCafetosCoff@hotmail.com",
     pass: "CaFeToSs4menos1",
   },
 });
@@ -131,10 +443,10 @@ app.post("/generar-codigo", async (req, res) => {
 
     // Enviar el código por correo electrónico
     const mailOptions = {
-      from: "cafecafetos@hotmail.com",
+      from: "cafeCafetosCoff@hotmail.com",
       to: correo_electronico,
       subject: "Código de Validación",
-      text: `Tu código de validación es: ${codigo}`,
+      text: `Tu código de validación es: ${codigo} si no has intentado registrarte en nuestra pagina, Caffetoscafe.co ignora este mensaje`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -479,6 +791,32 @@ app.get("/categorias", async (req, res) => {
   }
 });
 
+
+// Ruta para actualizar cliente desde la compra
+app.put('/clientes/:id_cliente', async (req, res) => {
+  try {
+    const id_cliente = req.params.id_cliente;
+    const { direccion, nombre_cliente, id_ciudad } = req.body;
+
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consulta SQL para actualizar los datos del cliente
+    const sql = 'UPDATE clientes SET direccion = ?, nombre_cliente = ?, id_ciudad = ? WHERE id_cliente = ?';
+    const values = [direccion, nombre_cliente, id_ciudad, id_cliente];
+
+    // Ejecutar la consulta
+    const [result] = await connection.execute(sql, values);
+
+    // Cerrar la conexión a la base de datos
+    connection.end();
+
+    res.json({ success: true,message: 'Cliente actualizado con éxito' });
+  } catch (err) {
+    console.error('Error al actualizar el cliente:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 // Ruta para obtener la lista de departamentos
 app.get("/departamentos", async (req, res) => {
   try {
@@ -516,10 +854,12 @@ app.post("/productos", async (req, res) => {
 
   try {
     // Crear conexión a la base de datos utilizando un pool de conexiones
+    let cantidad; 
+     id_categoria === '2' ? cantidad=10 : cantidad=1;
     const connection = await mysql.createPool(dbConfig).getConnection();
 
     await connection.execute(
-      "INSERT INTO productos (nombre_producto, descripcion, precio, id_categoria, url_imagen,existencias) VALUES (?, ?, ?, ?, ?,?)",
+      "INSERT INTO productos (nombre_producto, descripcion, precio, id_categoria, url_imagen,existencias,cantidad) VALUES (?, ?, ?, ?, ?,?,?)",
       [
         nombre_producto,
         descripcion,
@@ -527,6 +867,7 @@ app.post("/productos", async (req, res) => {
         id_categoria,
         url_imagen,
         existencias,
+        cantidad
       ]
     );
 
@@ -614,6 +955,36 @@ app.get("/obtenerImagenes", (req, res) => {
   }
 });
 
+//Ruta traer datos cliente
+app.get('/datos-cliente/:id_cliente', async (req, res) => {
+  const { id_cliente } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [rows] = await connection.execute('SELECT correo_electronico,direccion,nombre_cliente,id_ciudad FROM clientes WHERE id_cliente=?', [id_cliente]);
+    connection.end();
+
+    if (rows.length > 0) {
+      const id_ciudad = rows[0].id_ciudad;
+      const connectionCiudad = await mysql.createConnection(dbConfig); // Usar una variable diferente
+      const [ciudadRows] = await connectionCiudad.execute('SELECT nombre_ciudad FROM ciudades WHERE id_ciudad=?', [id_ciudad]);
+      connectionCiudad.end();
+
+      if (ciudadRows.length > 0) {
+        res.json({ success: true, ciudad: ciudadRows[0].nombre_ciudad, rows });
+      } else {
+        res.json({ success: false, message: 'Ciudad no encontrada' });
+      }
+    } else {
+      res.json({ success: false, message: 'Cliente no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ success: false, message: 'Error en el servidor' });
+  }
+});
+
 // Ruta para obtener la lista de ciudades por departamento
 app.get("/ciudades/:idDepartamento", async (req, res) => {
   const { idDepartamento } = req.params;
@@ -640,25 +1011,98 @@ app.get("/ciudades/:idDepartamento", async (req, res) => {
   }
 });
 
+// app.post('/nuevo-pedido', async (req, res) => {
+//   const { id_usuario, monto_total, productos, estado,detalles } = req.body;
+
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+//     const [result] = await connection.execute('INSERT INTO pedidos (id_cliente, monto_total, productos, estado, detalles) VALUES (?, ?, ?, ?, ?)', [id_usuario, monto_total, productos, estado, detalles]);
+
+//     const id_pedido = result.insertId; // Obtén la ID del pedido recién insertado
+
+//     // Traer email
+//     const [clienteEmailRows] = await connection.execute('Select correo_electronico from clientes where  id_cliente = ? ', [id_usuario]);
+// if (clienteEmailRows.length > 0) {
+//   const clienteEmail = clienteEmailRows[0].correo_electronico;
+
+//   connection.execute('select monto_total,fecha_pedido,productos from pedidos where id_pedido = ?',[id_pedido])
+
+//   const mensajeCliente = 'Gracias por tu compra. Tu pedido ha sido confirmado.';
+//   await enviarCorreoCliente(clienteEmail, 'Confirmación de Pedido', mensajeCliente);
+// } else {
+//   console.error('No se encontró la dirección de correo electrónico del cliente.');
+//   // Maneja el caso en el que no se encuentra la dirección de correo electrónico del cliente.
+// }
+//     // Envía el correo electrónico al administrador
+//     const mensajeAdmin = 'Se ha realizado un nuevo pedido en la tienda.';
+//     await enviarCorreoAdministrador('Nuevo Pedido', mensajeAdmin);
+
+//     connection.end();
+//     res.json({ success: true, message: "pedido completo" });
+//   } catch (error) {
+//     console.error("Error al guardar el pedido:", error);
+//     res
+//       .status(500)
+//       .json({ success: false, message: "Error al guardar el pedido" });
+//   }
+// });
+
 app.post('/nuevo-pedido', async (req, res) => {
-  const { id_usuario, monto_total, productos, estado } = req.body;
+  const { id_usuario, monto_total, productos, estado, detalles } = req.body;
 
   try {
     const connection = await mysql.createConnection(dbConfig);
-    const [result] = await connection.execute('INSERT INTO pedidos (id_cliente, monto_total, productos, estado) VALUES (?, ?, ?, ?)', [id_usuario, monto_total, productos, estado]);
 
-    const id_pedido = result.insertId; // Obtén la ID del pedido recién insertado
+    // Inserta el pedido en la base de datos y obtén su ID
+    const [result] = await connection.execute('INSERT INTO pedidos (id_cliente, monto_total, productos, estado, detalles) VALUES (?, ?, ?, ?, ?)', [id_usuario, monto_total, productos, estado, detalles]);
+    const id_pedido = result.insertId;
 
-    // Insertar en la tabla intermedia pedidos_usuario
-    // await connection.execute('INSERT INTO pedidos_usuario (id_usuario, id_pedido) VALUES (?, ?)', [id_usuario, id_pedido]);
+    // Traer email
+    const [clienteEmailRows] = await connection.execute('SELECT correo_electronico FROM clientes WHERE id_cliente = ?', [id_usuario]);
+    if (clienteEmailRows.length > 0) {
+      const clienteEmail = clienteEmailRows[0].correo_electronico;
+
+      // Obtén los detalles adicionales del pedido
+      const [pedidoDetailsRows] = await connection.execute('SELECT monto_total, fecha_pedido FROM pedidos WHERE id_pedido = ?', [id_pedido]);
+
+      if (pedidoDetailsRows.length > 0) {
+        const pedidoDetails = pedidoDetailsRows[0];
+        const { monto_total, fecha_pedido } = pedidoDetails;
+
+        // Crea el mensaje para el cliente con los detalles del pedido en formato HTML
+        const productosFormateadosHTML = productos.map(producto => `
+          <p>Producto: ${producto.nombre_producto}</p>
+          <p>Cantidad: ${producto.cantidad} unidades</p>
+        `).join('<br>');
+
+        const mensajeClienteHTML = `
+          <p>Gracias por tu compra. Tu pedido ha sido confirmado.</p>
+          <h2>Detalles del pedido:</h2>
+          ${productosFormateadosHTML}
+          <p>Monto Total: ${monto_total}</p>
+          <p>Fecha del Pedido: ${fecha_pedido}</p>
+        `;
+
+        // Envía el correo electrónico al cliente con contenido HTML
+        await enviarCorreoCliente(clienteEmail, 'Confirmación de Pedido', mensajeClienteHTML);
+      } else {
+        console.error('No se encontraron detalles del pedido.');
+        // Maneja el caso en el que no se encuentran detalles del pedido.
+      }
+    } else {
+      console.error('No se encontró la dirección de correo electrónico del cliente.');
+      // Maneja el caso en el que no se encuentra la dirección de correo electrónico del cliente.
+    }
+
+    // Envía el correo electrónico al administrador
+    const mensajeAdmin = 'Se ha realizado un nuevo pedido en la tienda.';
+    await enviarCorreoAdministrador('Nuevo Pedido', mensajeAdmin);
 
     connection.end();
     res.json({ success: true, message: "pedido completo" });
   } catch (error) {
     console.error("Error al guardar el pedido:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error al guardar el pedido" });
+    res.status(500).json({ success: false, message: "Error al guardar el pedido" });
   }
 });
 
@@ -760,6 +1204,26 @@ app.get('/noticias', async (req, res) => {
   }
 });
 
+//Ruta para traer productos por categorias
+app.get('/producto-categoria/:categoria', async (req, res) => {
+  const { categoria } = req.params;
+
+  try {
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consulta SQL para seleccionar productos por categoría
+    const [rows] = await connection.execute('SELECT * FROM productos WHERE id_categoria = ?', [categoria]);
+
+    // Cerrar la conexión a la base de datos
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener productos por categoría:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 // Ruta para editar una noticia por ID
 app.put('/editar-noticia/:id', async (req, res) => {
@@ -789,6 +1253,176 @@ app.put('/editar-noticia/:id', async (req, res) => {
   }
 });
 
+//proceso para enviar mensaje de nuevo pedido
+
+// Función para enviar el correo electrónico al cliente
+async function enviarCorreoCliente(destinatario, asunto, contenidoHTML) {
+  const mailOptions = {
+    from: 'cafeCafetosCoff@hotmail.com', // Cambia esto por tu dirección de correo electrónico
+    to: destinatario,
+    subject: asunto,
+    html: contenidoHTML
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo electrónico enviado al cliente con éxito.');
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico al cliente:', error);
+  }
+};
+
+// Función para enviar el correo electrónico al administrador
+const enviarCorreoAdministrador = async (asunto, contenido) => {
+  const mailOptions = {
+    from: 'cafeCafetosCoff@hotmail.com',
+    to: 'llvvvastolordvvll@gmail.com',
+    subject: asunto,
+    html: contenido,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo electrónico enviado al administrador con éxito.');
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico al administrador:', error);
+  }
+};
+
+//registrar venta
+app.post('/registrar-venta', async (req, res) => {
+  const { id_producto, cantidad_vendida, subtotal } = req.body;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [productoRows] = await connection.execute('SELECT nombre_producto FROM productos WHERE id_producto = ?', [id_producto]);
+    
+    if (productoRows.length === 0) {
+      connection.end();
+      return res.status(404).json({ success: false, message: "El producto no fue encontrado" });
+    }
+
+    const productoNombre = productoRows[0].nombre_producto;
+
+    const [ventaRows] = await connection.execute('SELECT id_venta, cantidad_vendida, subtotal FROM registro_ventas WHERE id_producto = ?', [id_producto]);
+    
+    if (ventaRows.length === 0) {
+      // No se encontró un registro existente, por lo que se inserta uno nuevo
+      await connection.execute('INSERT INTO registro_ventas (id_producto, cantidad_vendida, subtotal, nombre_producto) VALUES (?, ?, ?, ?)', [id_producto, cantidad_vendida, subtotal, productoNombre]);
+      connection.end();
+      return res.json({ success: true, message: "Venta registrada correctamente" });
+    }
+
+    // Ya existe un registro con la misma id_producto, actualiza la cantidad_vendida y subtotal
+    const existingRecord = ventaRows[0];
+    const updatedCantidadVendida = existingRecord.cantidad_vendida + cantidad_vendida;
+    const updatedSubtotal = existingRecord.subtotal + subtotal;
+
+    await connection.execute('UPDATE registro_ventas SET cantidad_vendida = ?, subtotal = ? WHERE id_venta = ?', [updatedCantidadVendida, updatedSubtotal, existingRecord.id_venta]);
+
+    connection.end();
+    res.json({ success: true, message: "Venta registrada correctamente (registro actualizado)" });
+  } catch (error) {
+    console.error("Error al registrar la venta:", error);
+    res.status(500).json({ success: false, message: "Error al registrar la venta" });
+  }
+});
+
+
+// app.post('/registrar-venta', async (req, res) => {
+//   const { id_producto, cantidad_vendida, subtotal } = req.body;
+
+//   try {
+//     const connection = await mysql.createConnection(dbConfig);
+//     const [rows] = await connection.execute('SELECT nombre_producto FROM productos WHERE id_producto = ?', [id_producto]);
+    
+//     if (rows.length === 0) {
+//       connection.end();
+//       return res.status(404).json({ success: false, message: "El producto no fue encontrado" });
+//     }
+
+//     const productoNombre = rows[0].nombre_producto;
+
+//     await connection.execute('INSERT INTO registro_ventas (id_producto, cantidad_vendida, subtotal, nombre_producto) VALUES (?, ?, ?, ?)', [id_producto, cantidad_vendida, subtotal, productoNombre]);
+
+//     connection.end();
+//     res.json({ success: true, message: "Venta registrada correctamente" });
+//   } catch (error) {
+//     console.error("Error al registrar la venta:", error);
+//     res.status(500).json({ success: false, message: "Error al registrar la venta" });
+//   }
+// });
+
+
+app.get('/ventas', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Consulta para obtener los datos de ventas
+    const [rows] = await connection.execute('SELECT * FROM registro_ventas');
+
+    connection.end();
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Error al obtener los datos de ventas:', error);
+    res.status(500).json({ success: false, message: 'Error al obtener los datos de ventas' });
+  }
+});
+
+app.put("/actualizar-estado/:idPedido", async (req, res) => {
+  const { idPedido } = req.params;
+  const { estado } = req.body; // Supongamos que el nuevo estado se recibe en el cuerpo de la solicitud
+
+  try {
+    // Crear una conexión a la base de datos
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Realizar la actualización del estado en la base de datos
+    const updateQuery = "UPDATE pedidos SET estado = ? WHERE id_pedido = ?";
+    const [result] = await connection.execute(updateQuery, [estado,idPedido ]);
+
+    // Verificar si se realizó la actualización correctamente
+    if (result.affectedRows === 1) {
+      res.status(200).json({ message: "Estado actualizado exitosamente", success: true });
+    } else {
+      res.status(404).json({ success: false,message: "Pedido no encontrado" });
+    }
+
+    // Cerrar la conexión
+    connection.end();
+  } catch (error) {
+    console.error("Error al actualizar el estado del pedido:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+app.put('/act-cliente/:id_cliente', async (req, res) => {
+  try {
+    const { id_cliente } = req.params;
+    const { nombre_cliente, id_ciudad, contrasena, direccion } = req.body;
+
+    // Aquí debes escribir la lógica para actualizar el cliente en tu base de datos.
+    // Puedes utilizar una consulta SQL o el ORM que estés utilizando.
+
+    // Ejemplo con consulta SQL (usando el paquete mysql2):
+    const updateQuery = `
+      UPDATE clientes
+      SET nombre_cliente = ?, id_ciudad = ?, contrasena = ?, direccion = ?
+      WHERE id_cliente = ?
+    `;
+
+    const connection = await mysql.createConnection(dbConfig)
+    // Ejecutar la consulta
+     connection.execute(updateQuery, [nombre_cliente, id_ciudad, contrasena, direccion, id_cliente]);
+
+     connection.end()
+
+    res.status(200).json({ success: true, message: 'Cliente actualizado con éxito' });
+  } catch (error) {
+    console.error('Error al actualizar el cliente:', error);
+    res.status(500).json({ success: false, message: 'Error al actualizar el cliente' });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () =>

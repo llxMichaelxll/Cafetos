@@ -1,22 +1,54 @@
-.contenedor-menu{
-    display: flex;
-    justify-content: space-around;
-}
 
-.Menu{
+.menuAdmin{
     padding-left: 200px;
     display: flex;
     justify-content: space-around;
     width: 80%;
 }
-
-.Botones{
+.menuAdmin-ul{
     display: flex;
-    justify-content: end;
-    padding-top: 20px;
+    justify-content: space-around;
+    background-color: #e2752b;
+}
+.menuAdmin-ul2{
+    display: flex;
+    justify-content: space-around;
+    background-color: #e2752b;
+}
+.menuAdmin-li{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+
+}
+.menuAdmin-li-ocultar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+.menuAdmin-li:hover{
+   transition: 0.5s ease; 
+   transform: scaleX(1.1) scaleY(1.1);
+}
+.Link-li{
+    color: white;
+    font-size: 1.1rem;
+
 }
 
-.Botones button{
+.admin-logo{
+    width: 100px;
+    height: 80px;
+}
+
+.li-buttons{
+    display: flex;
+    justify-content: space-around;
+}
+.Botones{
+    margin-left: 10px;
     width: 100px;
     height: 34px;
     background-color: #007bff;
@@ -25,4 +57,58 @@
     border-radius: 5px;
     margin-left: 5px;
     margin-right: 5px;
+    font-size: 1.1rem;
+
 }
+
+.menuAdmin-li-img-cerrar-sesion{
+    width: 30px;
+    height: 20px;
+    margin-left: 20px;
+
+}
+
+.menuAdmin-li-img-perfil{
+    width: 30px;
+    height: 20px;
+}
+
+.contendor-li-buttons{
+    display: flex;
+    justify-content: center;
+}
+.menu-forma{
+    width: 25px;
+    height: 5px;
+    background-color: white;
+    margin-bottom: 2px;
+  }
+  .depliegue-menuAdmin{
+    display: none;
+  }
+
+
+/* Medias */
+
+ @media screen and (max-width: 690px) {
+
+    .menuAdmin-ul2{
+      flex-direction: column;
+      align-items: center;
+    }
+    .li-buttons{
+        justify-content: center;
+    }
+
+    .depliegue-menuAdmin{
+        display: block;
+        margin-bottom: 10px;
+        margin-top: 30px;
+      }
+      .menuAdmin-li-ocultar{
+        display: none;
+      }
+      .menuAdmin-li{
+        margin-bottom: 25px;
+      }
+  } 

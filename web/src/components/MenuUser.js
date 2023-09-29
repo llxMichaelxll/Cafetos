@@ -1,54 +1,106 @@
-// MenuUser.js
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import CarritoModal from "./ventanaModal/ModalCarrito";
-import ContactoModal from "./ventanaModal/ModalContacto";
 import CarouselComponent from "./Carousel";
 import ProductosConImagenes from "./ProductosConImagen";
 import Footer from "./Footer";
 import "../styles/menu.css";
+import Categorias from "./Categorias";
+
 
 const MenuUser = ({ userToken, userId }) => {
+
+  const [mostrarBotones,setMostrarBotones] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [categoriasVisible, setCategoriasVisible] = useState(false);
   const handleLogoutClick = () => {
     localStorage.removeItem("user");
     window.location.href = "/";
   };
+  const [menuUl, setMenuUl] = useState('menuUser-ul')
+  const [ocultar,setOcultar] = useState('menuUser-li-ocultar')
+
+  const handleCategoriaChange = (categoria) => {
+    setCategoriaSeleccionada(categoria);
+    setCategoriasVisible(false);
+  };
 
   return (
     <>
-      <div className="menu-container">
-  <ul className="menu">
-    <li>Categorías</li>
-    <Link to="/noticias">
-      <li>Noticias</li>
-    </Link>
-    <Link to="/pedidos-usuario">
-      <li>Pedidos</li>
-    </Link>
-    <ContactoModal />
-  </ul>
-  <div className="menu-iconos">
-    <div className="menu-iconos-container">
-      <img
-        className="menu-iconos-img-perfil"
-        src="http://localhost:5000/uploads/usuario.png"
-        alt="Usuario"
-      />
-      <div className="botones-perfil">
-        <button className="cerrar-sesion botones-perfil" onClick={handleLogoutClick}>
-          Cerrar Sesión
-        </button>
-        <button className="mi-perfil botones-perfil">Mi Perfil</button>
-      </div>
-    </div>
-    <CarritoModal userId={userId} />
-  </div>
-</div>
+      <div className="menuUser-container">
 
+        <ul className={menuUl}>
+
+          <li className="li-user-logo">
+            <img className="User-logo" src="http://localhost:5000/uploads/Cafetos-Navbar-Logo.png"/>
+          </li>
+          <div onClick={()=>{ocultar==='menuUser-li-ocultar'?setOcultar('menuUser-li'):setOcultar('menuUser-li-ocultar');menuUl==='menuUser-ul'?setMenuUl('menuUser-ul2'):setMenuUl('menuUser-ul')}} className="depliegue-menuUser">
+            <div className="menu-forma"></div>
+            <div className="menu-forma"></div>
+            <div className="menu-forma"></div>
+          </div>
+          <li
+            className={ocultar}
+            onClick={() => {
+              setCategoriasVisible(!categoriasVisible);
+            }}
+          >
+            {categoriasVisible? (
+            <ul className="opciones-categorias">
+              <li onClick={() => handleCategoriaChange(null)}>
+                Todos los Productos
+              </li>
+              <li onClick={() => handleCategoriaChange(1)}>Detal</li>
+              <li onClick={() => handleCategoriaChange(2)}>Por mayor</li>
+            </ul>
+          ):'Categorias'}
+          </li>
+          
+          
+            <li className={ocultar}>
+              <Link className="menuUser-li-Link" to="/noticias">Noticias</Link>
+              </li>
+          
+          
+            <li className={ocultar}>
+              <Link className="menuUser-li-Link" to="/pedidos-usuario">Pedidos</Link>
+            </li>
+          
+          <li className={ocultar}>
+            <Link className="menuUser-li-Link" to={'/contacto'}>Contacto</Link>
+          </li>
+
+          <div className="Contenedor-user-butons-li">
+          <li className="menuUser-li">
+            <img
+              onClick={()=>{mostrarBotones ? setMostrarBotones(false) : setMostrarBotones(true);}}
+              className="menuUser-img-perfil"
+              src="http://localhost:5000/uploads/icono Usuario.png"
+              alt="Usuario"
+            />
+          </li>
+          <li className="menuUser-li"> <CarritoModal userId={userId} /></li>
+          </div>
+        </ul>
+
+       {mostrarBotones&&(<div className="menuUser-botones-contenedor">
+
+        <button className=" botones-sesion User-mi-perfil"><Link className="menuUser-li-Link"  to={'/perfil'}>Mi Perfil</Link></button>
+        <button
+          className=" botones-sesion User-cerrar-sesion"
+          onClick={handleLogoutClick}
+        >
+          Salir
+        </button>
+       </div>)}
+      </div>
 
       <CarouselComponent />
-      <ProductosConImagenes userId={userId} />
+      {categoriaSeleccionada !== null ? (
+        <Categorias categoria={categoriaSeleccionada} />
+      ) : (
+        <ProductosConImagenes userId={userId} />
+      )}
       <Footer />
     </>
   );

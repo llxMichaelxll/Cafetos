@@ -10,8 +10,11 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [idUsuario, setIdUsuario] = useState(null)
   const [rol,setUserRol]= useState(null)
-
   const admind = (rol === 'admin'? true: false);
+  const [mostrarB,setMostrarB] = useState(true);
+  const [detalles,setDetalles] = useState([]);
+  const [correo,setCorreo] = useState('')
+
 
   const vaciarCarrito = () => {
     setCartItems([])
@@ -26,7 +29,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ idUsuario,admind,setUserRol,setIdUsuario,vaciarCarrito, cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{detalles,setDetalles,mostrarB,setMostrarB,idUsuario,admind,setUserRol,setIdUsuario,vaciarCarrito, cartItems, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

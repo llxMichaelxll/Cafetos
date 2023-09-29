@@ -17,7 +17,11 @@ import ContactoModal from '../src/components/ventanaModal/ModalContacto';
 import PedidosUsuario from './components/PedidosUsuario';
 import PedidosAdmin from './components/PedidosAdmin';
 import CarritoModal from './components/ventanaModal/ModalCarrito';
-// import jwt from 'jsonwebtoken'; // Importa jsonwebtoken
+import Categorias from './components/Categorias';
+import RecuperarContraseña from './components/RecuperarContraseña';
+import Contacto from './components/Contacto';
+import Ventas from './components/Ventas';
+import Perfil from './components/Perfil';
 
 
 
@@ -103,15 +107,20 @@ function Inner() {
             <Route path="/registro" element={<Registro />} />
             <Route path="/nuevo-producto" element={<NuevoProducto />} />
             <Route path="/menu-admin" element={<MenuAdmin />} />
+            <Route path='/categorias' element={<Categorias/>} />
             <Route path="/carrito" element={<Carrito/>} />
             <Route path="/mensajes" element={<Mensajes />} />
             <Route path="/contacto-modal" element={<ContactoModal />} />
+            <Route path="/contacto" element={<Contacto/>} />
             <Route path="/sobre_nosotros" element={<SobreNosotros />} />
+            <Route path='/perfil' element={<Perfil/>}/>
             <Route path="/noticias" element={<Noticias/>} />
             <Route path="/carrito-modal" element={<CarritoModal/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path='/ventas' element={<Ventas/>} />
             <Route path="/Nnoticia" element={<NuevaNoticia/>}/>
             <Route path="/admin-pedidos" element={<PedidosAdmin/>} />
+            <Route path="/Recuperar-contraseña" element = {<RecuperarContraseña/>}/>
             <Route path="/pedidos-usuario" element={<PedidosUsuario/>} />
             <Route path="/" element={<Menu onLoginClick={handleLoginClick} userRole={userRole} onLogoutClick={handleLogoutClick} />} />
 

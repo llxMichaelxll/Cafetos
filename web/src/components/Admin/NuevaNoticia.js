@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './styles/NuevaNoticia.css'
 
 const NuevaNoticia = () => {
   const [encabezado, setEncabezado] = useState('');
   const [urlImagen, setUrlImagen] = useState('');
   const [textoNoticia, setTextoNoticia] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const history = useNavigate()
+  const history = useNavigate();
+  const [Alerta, setAlerta] = useState(false);
+  const [texAlert, setTexAlert] = useState("");
+  const [clase, setClase] = useState("");
 
   const handleImageChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -15,8 +19,21 @@ const NuevaNoticia = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const limpiar = () =>{
+      setEncabezado('');
+      setTextoNoticia('');
+      setSelectedFile(null);
+
+
+    }
+
     if (!encabezado || !selectedFile || !textoNoticia) {
-      console.error('Por favor complete todos los campos');
+      setTexAlert('Por favor complete todos los campos');
+      setClase('alerta-roja-noticia');
+      setAlerta(true);
+      setTimeout(()=>{
+        setAlerta(false)
+      },2000)
       return;
     }
 
@@ -31,7 +48,7 @@ const NuevaNoticia = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log('Imagen subida con éxito:', data.url);
+        
         setUrlImagen(data.url);
 
         // Ahora podemos continuar con el proceso de agregar la noticia
@@ -50,14 +67,28 @@ const NuevaNoticia = () => {
         });
 
         if (noticiaResponse.status === 201) {
-          console.log('Noticia agregada correctamente');
-          // Lógica para redirigir o mostrar un mensaje de éxito
-          history('/noticias')
+          setTexAlert('Noticia agregada correctamente');
+          setClase('alerta-verde-noticia');
+          setAlerta(true);
+          setTimeout(()=>{
+            setAlerta(false);
+            limpiar();
+          },2000)
         } else {
-          console.error('Error al agregar la noticia');
+          setTexAlert('Error al agregar la noticia');
+          setClase('alerta-roja-noticia');
+          setAlerta(true);
+          setTimeout(()=>{
+            setAlerta(false)
+          },2000)
         }
       } else {
-        console.error('Error al subir la imagen');
+        setAlerta('Error al subir la imagen');
+        setClase('alerta-roja-noticia');
+          setAlerta(true);
+          setTimeout(()=>{
+            setAlerta(false)
+          },2000)
       }
     } catch (error) {
       console.error('Error:', error);
@@ -65,30 +96,35 @@ const NuevaNoticia = () => {
   };
 
   return (
-    <div>
-      <h2>Agregar Nueva Noticia</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Encabezado:</label>
-          <input
+    <div className='contenedor-nuevaNoticia'>
+      <h2 className='nuevaNoticia-h2'>Agregar Nueva Noticia</h2>
+      <form className='nuevaNoticia-form' onSubmit={handleSubmit}>
+        <div className='contenedor-info'>
+          <label className='nuevaNoticia-label'>Encabezado:</label>
+          <input className='nuevaNoticia-input'
             type="text"
             value={encabezado}
             onChange={(e) => setEncabezado(e.target.value)}
           />
         </div>
-        <div>
-          <label>Imagen:</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+        <div className='contenedor-info'>
+          <label className='nuevaNoticia-label'>Imagen:</label>
+          <input className='nuevaNoticia-input' type="file" accept="image/*" onChange={handleImageChange} />
         </div>
-        <div>
-          <label>Texto de la Noticia:</label>
-          <textarea
+        <div className='contenedor-info'>
+          <label className='nuevaNoticia-label'>Texto de la Noticia:</label>
+          <textarea className='nuevaNoticia-textarea'
             value={textoNoticia}
             onChange={(e) => setTextoNoticia(e.target.value)}
           />
         </div>
-        <button type="submit">Agregar Noticia</button>
+        <button className='button-nuevaNoticia' type="submit">Agregar Noticia</button>
+
+        <button onClick={()=>{history('/noticias')}} className='button-nuevaNoticia' type="button">Atras</button>
       </form>
+      {Alerta&&<p className={clase}>
+          {texAlert}
+        </p>}
     </div>
   );
 };

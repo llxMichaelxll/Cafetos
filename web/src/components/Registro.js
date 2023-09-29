@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/registro.css";
 
 const Registro = () => {
@@ -10,10 +11,15 @@ const Registro = () => {
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [direccion, setDireccion] = useState("");
-  const [correoExistente, setCorreoExistente] = useState(false);
   const [codigoValidacion, setCodigoValidacion] = useState("");
   const [codigoEnviado, setCodigoEnviado] = useState(false);
   const [codigoValido, setCodigoValido] = useState(false);
+  const [alerta,setAlerta] = useState(false);
+  const [texAlerta,setTexAlerta] = useState('');
+  const [clase,setClase] = useState('');
+  const [bloqueo,setBloqueo] = useState ('registro-container-input')
+  const history = useNavigate();
+  console.log(bloqueo)
 
   useEffect(() => {
     // Obtener la lista de departamentos desde el servidor al cargar el componente
@@ -63,11 +69,21 @@ const Registro = () => {
     try {
       // Verificar que todos los campos estén completos
       if (!nombre || !correo || !departamento || !ciudad || !direccion || !password) {
-        alert("Por favor, complete todos los campos");
+        setTexAlerta("Por favor, complete todos los campos");
+        setClase('alerta-roja-p');
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
         return;
       }
       if (!correo.includes("@")) {
-        alert('El correo electrónico debe contener el símbolo "@"');
+        setTexAlerta('El correo electrónico debe contener el símbolo "@"');
+        setClase('alerta-roja-p');
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
         return;
       }
 
@@ -80,14 +96,20 @@ const Registro = () => {
         body: JSON.stringify({ correo_electronico: correo }),
       });
 
-      const verificaCorreoData = await verificaCorreoResponse.json();
-
-      if (verificaCorreoData.existe) {
-        setCorreoExistente(true);
+      const Data = await verificaCorreoResponse.json();
+      console.log(Data.success)
+      if (!Data.success) {
+        setTexAlerta('El correo ya esta registrado');
+        setClase('alerta-info-p');
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
         return;
       }
 
       // Si el correo no existe, generar y enviar el código de validación
+
       const codigoResponse = await fetch("http://localhost:5000/generar-codigo", {
         method: "POST",
         headers: {
@@ -100,9 +122,20 @@ const Registro = () => {
 
       if (codigoData.success) {
         setCodigoEnviado(true);
-        alert("Se ha enviado un código de validación a tu correo electrónico.");
+        setBloqueo('bloqueo-input')
+        setTexAlerta("Se ha enviado un código de validación a tu correo electrónico.");
+        setAlerta(true);
+        setClase('alerta-info-p')
+        setTimeout(()=>{
+          setAlerta(false)
+        },3000)
       } else {
-        console.error("Error al generar el código de validación:", codigoData.message);
+        setTexAlerta("Error al enviar mensaje");
+        setAlerta(true);
+        setClase('alerta-roja-p')
+        setTimeout(()=>{
+          setAlerta(false)
+        },3000)
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -111,7 +144,7 @@ const Registro = () => {
 
   const handleEnviarCodigo = async () => {
     try {
-      const codigoResponse = await fetch("http://localhost:5000/verificar-codigo", {
+      const codigoResponse = await fetch("http://localhost:5000/verificar-codigo-registro", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +158,7 @@ const Registro = () => {
       const codigoData = await codigoResponse.json();
 
       if (codigoData.success) {
-        alert("registro completo");
+        
         // Construir el objeto de datos del nuevo usuario a enviar al backend
       const nuevoUsuario = {
         nombre_usuario: nombre,
@@ -147,19 +180,39 @@ const Registro = () => {
         const insertarUsuarioData = await insertarUsuarioResponse.json();
 
         if (insertarUsuarioData.success) {
-          console.log("Usuario insertado exitosamente:", insertarUsuarioData.message);
+          
+        setTexAlerta("registro completo");
+        setClase('alerta-verde-p')
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
 
           // Obtener el ID del usuario recién insertado
           const userId = insertarUsuarioData.userId;
 
           // Crear el carrito para el usuario
           await createCartForUser(userId);
-          window.location.href = '/';
+          setTimeout(()=>{
+            // window.location.href = '/'
+            history('/')
+          },3000);
         } else {
-          console.error("Error al insertar usuario:", insertarUsuarioData.message);
+          setTexAlerta("Error al registrarse intetelo mas tarde");
+          setClase('alerta-roja')
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
         }
       } else {
-        console.error("Código de validación incorrecto:", codigoData.message);
+        //codigo incorrecto
+        setTexAlerta("codigo incorrecto");
+        setClase('alerta-roja-p')
+        setAlerta(true);
+        setTimeout(()=>{
+          setAlerta(false)
+        },2000)
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -167,21 +220,22 @@ const Registro = () => {
   };
 
   return (
-    <div className="registro-container">
-      <h2>Registro de Usuario</h2>
-      <input
+    <div className="con-Registro">
+      <div className="registro-container">
+      <h2 className="registro-h2">Registro de Usuario</h2>
+      <input className={bloqueo}
         type="text"
-        placeholder="Nombre"
+        placeholder="Nombre *"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
       />
-      <input
+      <input className={bloqueo}
         type="email"
-        placeholder="Correo electrónico"
+        placeholder="Correo electrónico *"
         value={correo}
         onChange={(e) => setCorreo(e.target.value)}
       />
-      <select
+      <select className={bloqueo}
         value={departamento}
         onChange={(e) => setDepartamento(e.target.value)}
       >
@@ -193,7 +247,7 @@ const Registro = () => {
         ))}
       </select>
       {departamento && (
-        <select value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
+        <select className={bloqueo} value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
           <option value="">Seleccionar Ciudad</option>
           {ciudades.map((ciudad) => (
             <option key={ciudad.id_ciudad} value={ciudad.id_ciudad}>
@@ -202,23 +256,18 @@ const Registro = () => {
           ))}
         </select>
       )}
-      <input
+      <input className={bloqueo}
         type="text"
-        placeholder="Dirección"
+        placeholder="Dirección *"
         value={direccion}
         onChange={(e) => setDireccion(e.target.value)}
       />
-      <input
+      <input className={bloqueo}
         type="password"
-        placeholder="Contraseña"
+        placeholder="Contraseña *"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      {correoExistente && (
-        <div className="alerta-correo">
-          El correo electrónico ya está registrado.
-        </div>
-      )}
       {codigoEnviado ? (
   <>
     {codigoValido ? (
@@ -229,7 +278,7 @@ const Registro = () => {
     ) : (
       // Si el código no es válido, muestra el campo de código y botón de enviar
       <>
-        <input
+        <input className="registro-container-input"
           type="text"
           placeholder="Código de Verificación"
           value={codigoValidacion}
@@ -242,6 +291,12 @@ const Registro = () => {
       ) : (
         <button onClick={handleRegistro}>Registrarse</button>
       )}
+      <button onClick={()=>history('/')}>Cancelar</button>
+    </div>
+        
+        {alerta&&<p className={clase}>
+          {texAlerta}
+          </p>}
     </div>
   );
 };

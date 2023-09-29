@@ -4,25 +4,24 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="contact-info">
-        <p>Número de contacto: +123456789</p>
-        <p>Correo electrónico: info@cafetos.com</p>
+    <footer className="footer-container">
+      <div className="footer-contact-info">
+        <p className='footer-p'>Número de contacto: +123456789</p>
+        <p className='footer-p'>Correo electrónico: info@cafetos.com</p>
       </div>
-        <Link to="/sobre_nosotros"> <div>Sobre Nosotros</div></Link>
-      <div className="social-media">
-        <div className="social-icon">
-          {/* Aquí puedes usar un componente de imagen o una etiqueta <img> para mostrar el ícono */}
-          <img src="http://localhost:5000/uploads/logo-facebook.png" alt="Facebook" />
-        </div>
-        <div className="social-icon">
-          {/* Aquí puedes usar un componente de imagen o una etiqueta <img> para mostrar el ícono */}
-          <img src='http://localhost:5000/uploads/16907671251110twit.png' alt="Twitter" />
-        </div>
-        <div className="social-icon">
-          {/* Aquí puedes usar un componente de imagen o una etiqueta <img> para mostrar el ícono */}
-          <img src='http://localhost:5000/uploads/Instagram-Logo.png' alt="Instagram" />
-        </div>
+        <Link className="footer-sobre-nosotros" to="/sobre_nosotros">Sobre nosotros</Link>
+      <div className="iconos-redes-contenedor">
+        <a href="https://www.facebook.com/Cafetosscafe" target="_blank" className="iconos-sociales">
+
+          <img className='icono-img' src="http://localhost:5000/uploads/facebook.png" alt="Facebook"/>
+
+        </a>
+        <a href='https://www.instagram.com/cafetos_/' target='_blank' className="iconos-sociales">
+          <img className='icono-img' src='http://localhost:5000/uploads/instagram.png' alt="Instagram" />
+        </a>
+        <a href='https://chatwith.io/es/s/cafetos-tienda-de-cafe' target='_blank' className="iconos-sociales">
+          <img className='icono-img' src='http://localhost:5000/uploads/whatsapp.png' alt="whatssap" />
+        </a>
       </div>
     </footer>
   );

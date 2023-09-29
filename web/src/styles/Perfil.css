@@ -1,0 +1,92 @@
+.contenido-perfil{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.294);
+    align-items: start;
+}
+.perfil-input{
+    font-size: 1.5rem;
+    height: 50px;
+    width: auto;
+    border: none;
+}
+
+.perfil-select{
+    font-size: 1.5rem;
+    height: 50px;
+    width: auto;
+    border: none;
+}
+@media(max-width:320px){
+   .perfil-select{
+    width: 90%;
+   } 
+}
+
+.perfil-label{
+    font-size: 1.5rem;
+    color: white;
+    margin-right:10px ;
+    margin: 10px 0px 10px 0px;
+}
+
+.from-perfil{
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.correo-input{
+    pointer-events: none;
+    background-color: rgba(4, 4, 156, 0.216);
+}
+.perfil-button{
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgb(252, 182, 30);
+    cursor: pointer;
+    margin: 20px 0px 0px 20px;
+    font-size: 1.6rem;
+    color: white;
+}
+.perfil-button:hover{
+    background-color: rgba(177, 126, 7, 0.95);
+}
+
+.perfil-b-button{
+    background-color: gray;
+}
+.perfil-p{
+    font-size: 1.6rem;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.alerta-roja-perfil{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}
+
+.alerta-verde-perfil{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(34, 255, 0);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}

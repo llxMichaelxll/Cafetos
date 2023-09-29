@@ -1,20 +1,27 @@
 /* footer.css */
 
-.footer {
-    background-color: #be913ca8;
+.footer-container {
+  margin-top: 20px;
+    background-color: black;
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 300px;
+    height: 250px;
   }
   
-  .contact-info {
-    font-size: 14px;
+  .footer-p {
+    font-size: 20px;
+    color: #e2752b;
+    margin-bottom: 20px;
+
   }
   
-  .social-media {
+  .iconos-redes-contenedor {
     display: flex;
+  }
+  .iconos-sociales{
+    margin: 20px;
   }
   
   .social-icon {
@@ -23,8 +30,20 @@
   }
   
   /* Estilos para las imágenes de las redes sociales */
-  .social-icon img {
+  .icono-img {
     width: 50px;
     height: 50px;
+    cursor: pointer;
   }
   
+  .footer-sobre-nosotros{
+    color: white;
+    font-size: 20px;
+  }
+
+
+  @media (max-width: 780px){
+    .footer-container {
+      flex-direction: column;
+    }
+  }

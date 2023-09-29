@@ -1,0 +1,121 @@
+.Contenedor-recuperar-contraseña{
+    background-color: rgba(0, 0, 0, 0.273);
+    padding-top: 50px;
+    height: 100VH;
+}
+
+.Contenedor-recuperar-contraseña h2{
+    color: white;
+    font-size: 1.1rem;
+}
+.recupuperar-contraseña-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.recuperar-contraseña-label{
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.recuperar-contraseña-input{
+    width: 21%;
+    height: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    border: 0;
+}
+.recuperar-contraseña-input2{
+    width: 115%;
+    height: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    border: 0;
+}
+
+
+.recuperar-contraseña-button{
+    width: 140%;
+    height: 40px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color:white;
+    border: none;
+    border-radius: 5px;
+
+}
+.recuperar-contraseña-button:hover{
+    background-color: #f8d41dd6;
+    transition: 0.5s ease;
+    transform: scaleX(1.01);
+    
+}
+
+
+.b-enviar{
+    background-color: #e2752b;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.b-cancelar{
+    background-color: #635d59;
+    margin-bottom: 5px;
+}
+
+.alerta-roja-recu{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}
+.alerta-info-recu{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(225, 235, 24);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}
+.alerta-verde-recu{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(53, 235, 24);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+}
+
+@media (max-width:390px){
+    .recuperar-contraseña-button{
+        width: 90%;
+        height: 50px;
+    }
+    .recuperar-contraseña-input{
+        width: 90%;
+        height: 50px;
+    }
+}

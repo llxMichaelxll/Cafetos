@@ -29,9 +29,9 @@ const ProductosConImagenes = () => {
               alt={`Imagen de ${producto.nombre_producto}`}
             />
             <h3>{producto.nombre_producto}</h3>
-            <p>Descripción: {producto.descripcion}</p>
-            <p>Precio: {producto.precio}</p>
-            <p>Existencias: {producto.existencias}</p>
+            <p className="p-productosImagenes">Descripción: {producto.descripcion}</p>
+            <p className="p-productosImagenes">Precio: {producto.precio}</p>
+            <p className="p-productosImagenes">Existencias: {producto.existencias}</p>
 
             {cartItems.some((item) => item.id === producto.id_producto) ? (
               <button onClick={() => removeFromCart(producto.id_producto)}>

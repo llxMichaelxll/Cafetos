@@ -9,11 +9,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: grid;
   justify-content: center;
-}
+  background-color: #efb541
+} 
 
 .nuevo-producto-container h2 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: white;
 }
 
 .nuevo-producto-container form div {
@@ -23,6 +26,8 @@
 .nuevo-producto-container label {
   display: block;
   font-weight: bold;
+  color: white;
+  font-size: 1.3rem;
 }
 
 .nuevo-producto-container input[type="text"],
@@ -33,6 +38,7 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 1.1rem;
 }
 
 .nuevo-producto-container input[type="file"] {
@@ -43,11 +49,12 @@
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #e2752b;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
 }
 
 .nuevo-producto-container button[type="submit"]:hover {
@@ -64,4 +71,32 @@
 
 .nuevo-producto-container a:hover {
   text-decoration: underline;
+}
+
+
+.alerta-roja-nproducto{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: red;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-size: 1.1rem;
+}
+.alerta-verde-nproducto{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgb(13, 255, 0);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-size: 1.1rem;
 }

@@ -3,7 +3,6 @@ import Carrito from '../Carrito'; // Importar el componente Carrito
 import '../ventanaModal/carritoModal.css'
 
 const CarritoModal = ({userId}) => {
-  console.log(userId)
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar si la ventana emergente está abierta o cerrada
 
   const openModal = () => {
@@ -17,7 +16,7 @@ const CarritoModal = ({userId}) => {
   return (
     <div>
       {/* Botón o enlace para abrir la ventana emergente */}
-      <img onClick={openModal} src='http://localhost:5000/uploads/carrito.png'/>
+      <img className='img-carrito-modal' onClick={openModal} src='http://localhost:5000/uploads/carrito-de-compras.png'/>
 
       {/* Ventana emergente (modal) */}
       {isModalOpen && (

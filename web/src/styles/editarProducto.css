@@ -1,31 +1,17 @@
-/* Estilos para el fondo oscuro */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  /* Estilos para el formulario de edición */
+
   .editar-producto {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     position: fixed;
-    top: 150px;
-    right: 200px;
-    background-color: white;
+    min-width: 38%;
+    height: auto;
+    top: 0px;
+    left: 0px;
+    background-color: rgb(223, 131, 33);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    width: 60%; /* Ajusta el ancho de la ventana emergente según tus necesidades */
+    z-index: 99;
   }
 
   /*estilos para el form */
@@ -36,4 +22,57 @@
     justify-content: center;
     align-content: center;
     flex-wrap: wrap;
+  }
+
+  .editar-producto-input{
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .label-producto-editar{
+    font-size: 1.1rem;
+    color: white;
+    display:flex;
+    justify-content: space-between;
+  }
+  .button-guardar-editar-producto{
+    color: white;
+    font-size: 1.1rem;
+    background-color: #e2752b;
+    height: 50px;
+    cursor: pointer;
+    margin-bottom: 18px;
+  }
+  .button-Cancelar-editar-producto{
+    color: white;
+    font-size: 1.1rem;
+    background-color: #656564;
+    height: 50px;
+    cursor: pointer;
+  }
+
+  .alerta-roja-editar-producto{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
+  }
+  .alerta-verde-editar-producto{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(13, 255, 0);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1.1rem;
   }
