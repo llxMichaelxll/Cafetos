@@ -1312,12 +1312,15 @@ app.post('/registrar-venta', async (req, res) => {
       connection.end();
       return res.json({ success: true, message: "Venta registrada correctamente" });
     }
-
+ 
     // Ya existe un registro con la misma id_producto, actualiza la cantidad_vendida y subtotal
     const existingRecord = ventaRows[0];
     const updatedCantidadVendida = existingRecord.cantidad_vendida + cantidad_vendida;
-    const updatedSubtotal = existingRecord.subtotal + subtotal;
+    // const updatedSubtotal = existingRecord.subtotal + subtotal;
+     const updatedSubtotal = parseInt(existingRecord.subtotal) + parseInt(subtotal);
+   
 
+    console.log("subtotal enviado:", subtotal, " subtotal en base: ", existingRecord.subtotal, " suma: ",updatedSubtotal )
     await connection.execute('UPDATE registro_ventas SET cantidad_vendida = ?, subtotal = ? WHERE id_venta = ?', [updatedCantidadVendida, updatedSubtotal, existingRecord.id_venta]);
 
     connection.end();

@@ -196,6 +196,7 @@ const registrarVentas = async (productos) => {
       },
       body: JSON.stringify(venta),
     });
+    console.log("subtotal: ", venta.subtotal)
   }
 };
 

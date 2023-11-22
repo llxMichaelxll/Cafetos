@@ -134,7 +134,7 @@ const ProductosAdmin = () => {
           if (data.success) {
             // Actualizar la lista de productos después de eliminar
             const updatedProducts = productos.filter((producto) => producto.id_producto !== idProducto);
-            setAlerta({ mostrar: true, texto: 'Producto Eliminado', clase: 'alerta-verde-editar-producto' });
+            setAlerta({ mostrar: true, texto: 'Producto eliminado', clase: 'alerta-verde-editar-producto' });
 
             setTimeout(() => {
               setAlerta({ mostrar: false, texto: '', clase: '' });

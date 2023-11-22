@@ -3,6 +3,9 @@ import "../styles/FormularioCompra.css";
 import { useCart } from "../context/ContextCarrito";
 
 const FormularioCompra = ({ userId }) => {
+  const [Alerta, setAlerta] = useState(false)
+  const [texAlert,SetTexAlert] = useState('');
+  const[clase,setClase] = useState('')
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editar, setEditar] = useState(false);
@@ -115,6 +118,18 @@ const FormularioCompra = ({ userId }) => {
       });
   }, [handleSubmit]);
 
+  const Cambios = () =>{
+    if(!formData.direccion||!formData.nombre_cliente||!formData.id_departamento||!formData.id_ciudad){
+      SetTexAlert('Debes completar todos los campos')
+      setClase('alerta-roja-datos')
+      setAlerta(true)
+      setTimeout(()=>{setAlerta(false)},2000)
+    }
+    else{
+      setMostrarB(true)
+    }
+  }
+
 
   // Función de manejo de eventos para capturar cambios en los campos de entrada
   // const handleInputChange = (event) => {
@@ -140,10 +155,10 @@ const FormularioCompra = ({ userId }) => {
           }
           {editar && (
             <div className="covertor-formulario-editar">
-                <form onSubmit={handleSubmit}>
-        <div>
+                <form className="form-editar" onSubmit={handleSubmit}>
+        <div className="editar-div">
           <label htmlFor="direccion">Dirección:</label>
-          <input
+          <input className="editar-input"
             type="text"
             id="direccion"
             name="direccion"
@@ -151,9 +166,9 @@ const FormularioCompra = ({ userId }) => {
             onChange={handleChange}
           />
         </div>
-        <div>
+        <div className="editar-div">
           <label htmlFor="nombre_cliente">Nombre del Cliente:</label>
-          <input
+          <input className="editar-input"
             type="text"
             id="nombre_cliente"
             name="nombre_cliente"
@@ -161,7 +176,7 @@ const FormularioCompra = ({ userId }) => {
             onChange={handleChange}
           />
         </div>
-        <div>
+        <div className="editar-div">
           <label htmlFor="id_departamento">Departamento:</label>
           <select
             id="id_departamento"
@@ -177,7 +192,7 @@ const FormularioCompra = ({ userId }) => {
             ))}
           </select>
         </div>
-        <div>
+        <div className="editar-div">
           <label htmlFor="id_ciudad">Ciudad:</label>
           <select
             id="id_ciudad"
@@ -193,13 +208,14 @@ const FormularioCompra = ({ userId }) => {
             ))}
           </select>
         </div>
-        <button type="submit" className="boton-formulario-editar"  onClick={() => {setMostrarB(true);} }>Confirmar</button>
+        <button type="submit" className="boton-formulario-editar"  onClick={() => {Cambios()} }>Confirmar</button>
                 <button className="boton-formulario-editar" onClick={() => {setEditar(false); setMostrarB(true)}}>Cancelar</button>
       </form>
             </div>
           )}
         </>
       )}
+      {Alerta&&<p className={clase}>{texAlert}</p>}
     </div>
   );
 };
